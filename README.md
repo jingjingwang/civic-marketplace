@@ -1,1 +1,1 @@
-A marketplace for social good
+A marketplace for social goods

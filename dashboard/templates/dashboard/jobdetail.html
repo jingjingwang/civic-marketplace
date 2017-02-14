@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <title>CataLyst - Dashboard</title>
+    <!-- Bootstrap Core CSS -->
+	<link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Custom CSS -->
+	<link href="{% static 'dashboard/css/dashboard.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
+        <div class="container topnav">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+				<a class="navbar-brand topnav" href="{% url 'landing:index' %}">CataLyst</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+							<a href="/login">Log In</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>{{ title }}</h2>
+                    <h3>{{ description }}</h3>
+                    <form id="part-form" action="{% url 'dashboard:participate' %}" method="post" role="form">
+                    {% csrf_token %}
+                        <input type="submit" id="participate-submit" tabindex="1" class="btn btn-primary btn-lg" value="Participate">
+                        <input type="text" id="user_id" name="user_id" tabindex="2" style="display:none" value="{{ user_id }}">
+                        <input type="text" id="job_id" name="job_id" tabindex="3" style="display:none" value="{{ job_id }}">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+</body>
+
+</html>

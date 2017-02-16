@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+
+{% load static %}
+	<nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
+        <div class="container">
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+					<li><a class="navbar-brand" href="{% url 'landing:index' %}">CataLyst</a><li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                	{% if user.id is not None %}
+					<span class="navbar-text">Hello {{user.display_name}}!</span>
+					<li><a href="{% url 'account:logout' %}">Log Out</a></li>
+   	            	{% else %}
+					<li><a href="{% url 'account:index' %}">Log In</a></li>
+                	{% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <title>CataLyst - Dashboard</title>
+    <!-- Bootstrap Core CSS -->
+	<link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Custom CSS -->
+	<link href="{% static 'dashboard/css/dashboard.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+	{% include "landing/navbar.html" %}
+	<div class="container-fluid row">
+	  	<div class="col-md-2">
+	        <ul class="nav flex-column">
+   	        	<li><a class="nav-link" href="{% url 'dashboard:index' %}">Overview</a></li>
+            	<li><a class="nav-link" href="{% url 'dashboard:addjob' %}">Publish a job</a></li>
+            	<li><a class="nav-link active" href="#">Profile</a></li>
+        	</ul>
+	  	</div>
+  		<div class="col-md-10">
+            {% if messages %}
+                {% for message in messages %}
+                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+            <form id="addjob-form" action="{% url 'account:change' %}" method="post" role="form">
+            {% csrf_token %}
+			<label for="username">My display name</label>
+			<input type="text" name="username" class="form-control" placeholder="{{ user.display_name }}" value="{{ user.display_name }}">
+			<label for="email">My email</label>
+			<input type="email" name="email" class="form-control" placeholder="{{ user.email }}" value="{{ user.email }}">
+			<hr>
+			<label for="password">New password</label>
+			<input type="password" name="password" class="form-control" value="">
+			<label for="password">Confirm new password</label>
+			<input type="password" name="confirm-password" class="form-control" value="">
+			<input type="text" name="user_id" style="display:none" value="{{ user.id }}">
+            <input type="submit" class="btn btn-primary" value="Save Changes">
+            </form>
+        </div>
+    </div>
+  </div>
+</body>
+</html>

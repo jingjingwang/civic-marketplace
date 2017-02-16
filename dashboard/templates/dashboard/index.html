@@ -14,97 +14,73 @@
 </head>
 
 <body>
+	{% include "landing/navbar.html" %}
+	<div class="container-fluid row">
+	  	<div class="col-md-2">
+            <ul class="nav flex-column">
+                <li><a class="nav-link active" href="{% url 'dashboard:index' %}">Overview</a></li>
+                <li><a class="nav-link" href="{% url 'dashboard:addjob' %}">Publish a job</a></li>
+                <li><a class="nav-link" href="{% url 'dashboard:profile' %}">My Profile</a></li>
+            </ul>
+	  	</div>
 
-    <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
-        <div class="container topnav">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-				<a class="navbar-brand topnav" href="{% url 'landing:index' %}">CataLyst</a>
-            </div>
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-						<a href="{% url 'login:index' %}">Log In</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <section id="partlist" class="services bg-warning">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <hr class="small">
-                    <h2>My Jobs</h2>
-                    {% for job in part_list %}
-                        {% if forloop.first %}<div class="row">{% endif %}
-                        <div class="col-md-3  text-center">
-                            <a href="{% url 'dashboard:jobdetail' job.id %}?user_id={{ user_id }}">
-								<img class="img-portfolio img-responsive" src="{% static 'dashboard/img/placeholder.png' %}">
-								<h4>{{ job.title }}</h4>
-	                        </a>
-                        </div>
-                       {% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}
-                       {% if forloop.last %}</div>{% endif %}
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="joblist" class="bg-success">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <hr class="small">
-                    <h2>We Think that You May Get Interested in These</h2>
-                    {% for job in job_list %}
-                        {% if forloop.first %}<div class="row">{% endif %}
-                        <div class="col-md-3 text-center">
-							<a href="{% url 'dashboard:jobdetail' job.id %}?user_id={{ user_id }}">
-								<img class="img-portfolio img-responsive" src="{% static 'dashboard/img/placeholder.png' %}">
-								<h4>{{ job.title }}</h4>
-							</a>
-                        </div>
-                       {% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}
-                       {% if forloop.last %}</div>{% endif %}
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="addjob" class="bg-primary">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <hr class="small">
-					<h2>Have a job? Announce it</h2>
-                    <form id="addjob-form" action="{% url 'dashboard:addjob' %}" method="post" role="form">
-		            {% csrf_token %}
-                        <div class="form-group">
-							<label for="title">Enter the title of your job</label>
-                            <input type="text" id="title" name="title" tabindex="1" class="form-control" placeholder="Title" value="">
-							<label for="description">Describe the job in detail</label>
-							<textarea class="form-control" tabindex="2" id="description" name="description" rows="3" placeholder="Description"></textarea>
-							<input type="text" id="user_id" name="user_id" tabindex="3" style="display:none" value="{{ user_id }}">
-                        </div>
-                        <input type="submit" class="btn btn-primary" value="Add">
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-    <script src="js/jquery.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+        <main class="col-md-10">
+	  		<div class="row">
+				{% if messages %}
+					<ul class="messages">
+   						{% for message in messages %}
+				    		<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+					        	{{ message }}
+						    </li>
+					    {% endfor %}
+					</ul>
+				{% endif %}
+                <hr class="small">
+                <h3>I'm involved in</h3>
+                {% for job in user_jobs %}
+                    {% if forloop.first %}<div class="row">{% endif %}
+                    <div class="col-md-3  text-center">
+                        <a href="{% url 'dashboard:jobdetail' job.id %}">
+							<img class="img-portfolio img-responsive" src="{% static 'dashboard/img/placeholder.png' %}">
+							<h4>{{ job.title }}</h4>
+	                    </a>
+                   </div>
+                   {% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}
+                   {% if forloop.last %}</div>{% endif %}
+               {% endfor %}
+			</div>
+	  		<div class="row">
+                <hr class="small">
+                <h3>Jobs released by me</h3>
+                {% for job in released_jobs %}
+                    {% if forloop.first %}<div class="row">{% endif %}
+                    <div class="col-md-3 text-center">
+						<a href="{% url 'dashboard:jobdetail' job.id %}">
+						<img class="img-portfolio img-responsive" src="{% static 'dashboard/img/placeholder.png' %}">
+						<h4>{{ job.title }}</h4>
+						</a>
+                    </div>
+                    {% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}
+                    {% if forloop.last %}</div>{% endif %}
+                {% endfor %}
+			</div>
+	  		<div class="row">
+                <hr class="small">
+                <h3>You may find these interesting</h3>
+                {% for job in recommended_jobs %}
+                    {% if forloop.first %}<div class="row">{% endif %}
+                    <div class="col-md-3 text-center">
+						<a href="{% url 'dashboard:jobdetail' job.id %}">
+						<img class="img-portfolio img-responsive" src="{% static 'dashboard/img/placeholder.png' %}">
+						<h4>{{ job.title }}</h4>
+						</a>
+                    </div>
+                    {% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}
+                    {% if forloop.last %}</div>{% endif %}
+                {% endfor %}
+			</div>
+        </main>
+    </div>
+  </div>
 </body>
-
 </html>

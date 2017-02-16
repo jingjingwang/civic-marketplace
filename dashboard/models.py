@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.utils import timezone
 
-from login.models import User
+from account.models import User
 
 class Job(models.Model):
     publisher = models.ForeignKey(User, on_delete=models.CASCADE)

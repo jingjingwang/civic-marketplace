@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <title>CataLyst - Dashboard</title>
+    <!-- Bootstrap Core CSS -->
+	<link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Custom CSS -->
+	<link href="{% static 'dashboard/css/dashboard.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+	{% include "landing/navbar.html" %}
+	<div class="container-fluid row">
+	  	<div class="col-md-2">
+	        <ul class="nav flex-column">
+   	        	<li><a class="nav-link" href="{% url 'dashboard:index' %}">Overview</a></li>
+            	<li><a class="nav-link active" href="{% url 'dashboard:addjob' %}">Publish a job</a></li>
+            	<li><a class="nav-link" href="{% url 'dashboard:profile' %}">Profile</a></li>
+        	</ul>
+	  	</div>
+  		<div class="col-md-10">
+            <hr class="small">
+            <form id="addjob-form" action="{% url 'dashboard:addjob' %}" method="post" role="form">
+            {% csrf_token %}
+                <div class="form-group">
+					<label for="title">Enter the title of your job</label>
+                    <input type="text" id="title" name="title" tabindex="1" class="form-control" placeholder="Title" value="">
+					<label for="description">Describe the job in detail</label>
+					<textarea class="form-control" tabindex="2" id="description" name="description" rows="3" placeholder="Description"></textarea>
+					<input type="text" id="user_id" name="user_id" tabindex="3" style="display:none" value="{{ user.id }}">
+                </div>
+                <input type="submit" class="btn btn-primary" value="Publish It">
+            </form>
+        </div>
+    </div>
+  </div>
+</body>
+</html>

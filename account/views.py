@@ -4,6 +4,8 @@ from django.contrib.messages import error, success
 from .models import User
 
 def index(request):
+    if 'user_id' in request.session:
+        return redirect('dashboard:index')
     return render(request, 'account/index.html')
 
 def login(request):

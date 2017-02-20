@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from . import landing
 
 urlpatterns = [
     url(r'^account/', include('account.urls'), name='account'),

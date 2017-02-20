@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from dashboard.models import Job
+from django.contrib.auth.models import User
 
-from account.models import User
+from dashboard.models import Job
 
 def index(request):
     jobs = Job.objects.all()

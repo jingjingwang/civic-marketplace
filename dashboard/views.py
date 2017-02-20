@@ -1,11 +1,7 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.urls import reverse
-from django.views import generic
-from django.contrib.messages import error, success
-
+from django.contrib.messages import error
+from django.contrib.auth.models import User
 from .models import Job, Involve
-from account.models import User
 
 def get_user_by_id(request):
     if 'user_id' not in request.session:
@@ -67,7 +63,7 @@ def jobdetail(request, job_id):
     participated = len(get_involve(job, user)) > 0
     return render(request, 'dashboard/jobdetail.html', {
         'action': 'Unparticipate' if participated else 'Participate',
-        'user':user, 'job':job, 'publisher':job.publisher.display_name
+        'user':user, 'job':job, 'publisher':job.publisher.username
     })
 
 def participate(request):

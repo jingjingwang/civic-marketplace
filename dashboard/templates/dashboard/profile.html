@@ -31,8 +31,8 @@
             {% endif %}
             <form id="addjob-form" action="{% url 'account:change' %}" method="post" role="form">
             {% csrf_token %}
-			<label for="username">My display name</label>
-			<input type="text" name="username" class="form-control" placeholder="{{ user.display_name }}" value="{{ user.display_name }}">
+			<label for="username">My username</label>
+			<input type="text" name="username" class="form-control" placeholder="{{ user.username }}" value="{{ user.username }}">
 			<label for="email">My email</label>
 			<input type="email" name="email" class="form-control" placeholder="{{ user.email }}" value="{{ user.email }}">
 			<hr>

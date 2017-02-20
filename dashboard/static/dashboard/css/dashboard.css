@@ -1,8 +1,0 @@
-body {
-    padding-top: 50px;
-}
-
-.nav > li > a.nav-link.active {
-	background-color: #4CAF50;
-	color: white;
-}

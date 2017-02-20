@@ -8,6 +8,7 @@ For now the project uses Python 2.7 and django 1.10.
 
 ## Populate the database
 
+`python manage.py makemigrations`
 `python manage.py migrate`
 
 `db.sqlite3` should be generated with some schemas.

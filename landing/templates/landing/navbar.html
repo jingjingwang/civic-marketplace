@@ -9,7 +9,7 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                 	{% if user.id is not None %}
-					<li><a href="{% url 'dashboard:index' %}">Hello {{user.display_name}}!</a></li>
+					<li><a href="{% url 'dashboard:index' %}">Hello {{user.username}}!</a></li>
 					<li><a href="{% url 'account:logout' %}">Log Out</a></li>
    	            	{% else %}
 					<li><a href="{% url 'account:index' %}">Log In</a></li>

@@ -54,7 +54,7 @@ You can also run:
 `python manage.py runserver host:port`
 but may need to add the `host` in `ALLOWED_HOSTS` in `civic_marketplace/settings.py`.
 
-## Run it in Google Cloud Platform
+## Connect to Google Cloud Platform
 
 `./cloud_sql_proxy -instances="catalyst-market:us-central1:catalyst"=tcp:3306`
 
@@ -67,3 +67,10 @@ To connect to the local service *and thus also our cloud instance*, run:
 
 Notice: *ALL CHANGES MADE HERE APPLY TO OUR CLOUD INSTANCE*
 
+## Deploy to Google Cloud Platform
+
+Install Cloud SDK: https://cloud.google.com/sdk/downloads
+
+`gcloud app deploy --project catalyst-market`
+
+Notice: *THIS DEPLOYS A NEW VERSION TO GOOGLE CLOUD*

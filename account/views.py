@@ -2,13 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.messages import error, success
 from django.contrib.auth.models import User
 
-def index(request):
-    if 'user_id' in request.session:
-        return redirect('dashboard:index')
-    return render(request, 'account/login.html')
-
 def login(request):
     if request.method == 'GET':
+        if 'user_id' in request.session:
+            return redirect('dashboard:index')
         return render(request, 'account/login.html')
     try:
         user = User.objects.get(email=request.POST['email'])

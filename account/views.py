@@ -8,9 +8,9 @@ def login(request):
             return redirect('dashboard:index')
         return render(request, 'account/login.html')
     try:
-        user = User.objects.get(email=request.POST['email'])
+        user = User.objects.get(username=request.POST['username'])
     except (KeyError, User.DoesNotExist):
-        error(request, 'A user with this email does not exist.')
+        error(request, 'A user with this username does not exist.')
         return redirect('account:login')
     if not user.check_password(request.POST['password']):
         error(request, 'Invalid password.')
@@ -39,16 +39,16 @@ def register(request):
         error(request, 'Passwords do not match.')
         return redirect('account:register')
     try:
-        user = User.objects.get(email=request.POST['email'])
+        user = User.objects.get(username=request.POST['username'])
     except (KeyError, User.DoesNotExist):
-        user = User(email=request.POST['email'], username=request.POST['username'])
+        user = User(username=request.POST['username'], email=request.POST['email'])
         user.set_password(request.POST['password'])
         user.save()
         request.session['user_id'] = user.id
-        request.session.set_expiry(300)
+        request.session.set_expiry(600)
         return redirect('dashboard:index')
     else:
-        error(request, 'This email has been registered.')
+        error(request, 'This username has been registered.')
         return redirect('account:register')
 
 def change(request):
@@ -73,3 +73,4 @@ def change(request):
     user.save()
     success(request, 'Your changes have been saved.')
     return redirect('dashboard:profile')
+

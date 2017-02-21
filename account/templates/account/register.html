@@ -30,10 +30,10 @@
 				<form id="register-form" action="{% url 'account:register' %}" method="post" role="form">
 				{% csrf_token %}
 				<div class="form-group">
-					<input type="email" name="email" id="email" tabindex="1" class="form-control" placeholder="Email Address (This is How We Recognize You)" value="">
+					<input type="username" name="username" id="username" tabindex="1" class="form-control" placeholder="Username" value="">
 				</div>
 				<div class="form-group">
-					<input type="text" name="username" id="username" tabindex="2" class="form-control" placeholder="Name You Go By" value="">
+					<input type="email" name="email" id="email" tabindex="2" class="form-control" placeholder="Email Address" value="">
 				</div>
 				<div class="form-group">
 					<input type="password" name="password" id="password" tabindex="3" class="form-control" placeholder="Password">

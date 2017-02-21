@@ -31,8 +31,6 @@
             {% endif %}
             <form id="addjob-form" action="{% url 'account:change' %}" method="post" role="form">
             {% csrf_token %}
-			<label for="username">My username</label>
-			<input type="text" name="username" class="form-control" placeholder="{{ user.username }}" value="{{ user.username }}">
 			<label for="email">My email</label>
 			<input type="email" name="email" class="form-control" placeholder="{{ user.email }}" value="{{ user.email }}">
 			<hr>
@@ -41,6 +39,7 @@
 			<label for="password">Confirm new password</label>
 			<input type="password" name="confirm-password" class="form-control" value="">
 			<input type="text" name="user_id" style="display:none" value="{{ user.id }}">
+			<input type="text" name="username" style="display:none" value="{{ user.username }}">
             <input type="submit" class="btn btn-primary" value="Save Changes">
             </form>
         </div>

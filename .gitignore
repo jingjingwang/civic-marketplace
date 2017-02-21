@@ -2,3 +2,4 @@
 */migrations/*
 *.log
 lib
+.DS_Store

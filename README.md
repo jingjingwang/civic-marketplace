@@ -10,7 +10,7 @@ For now the project uses Python 2.7 and django 1.10.
 
 `pip install MySQL-python`
 
-`sudo apt-get install libmysqlclient-dev mysql-client'
+`sudo apt-get install libmysqlclient-dev mysql-client`
 
 ## Test locally
 
@@ -18,7 +18,7 @@ You can pick either SQLite or MySQL for local testing.
 
 ### SQLite
 
-Change the `DATABASES` section in `civic_marketplace/settings.py` to be using SQLite.
+Change the `DATABASES` section in `civic_marketplace/settings.py` to use SQLite.
 
 ### MySQL
 
@@ -31,7 +31,8 @@ CREATE USER '[MYSQL_USER]' IDENTIFIED BY '[MYSQL_PASSWORD]';
 GRANT ALL ON *.* TO '[MYSQL_USER]';
 `
 
-Check if you can connect to your local MySQL service:
+Check if you can connect to your local MySQL server:
+
 `mysql -h 127.0.0.1 --port 3306 -u [MYSQL_USER] -p` then enter `[MYSQL_PASSWORD]`
 
 Change the `DATABASES` section in `civic_marketplace/settings.py` accordingly to use your username and password (and port number, if not 3306).
@@ -50,22 +51,24 @@ Check if django tables are created in your selected backend.
 
 The check the website in localhost:8000. 
 
-You can also run:
+You can also do:
+
 `python manage.py runserver host:port`
+
 but may need to add the `host` in `ALLOWED_HOSTS` in `civic_marketplace/settings.py`.
 
 ## Connect to Google Cloud Platform
 
-`./cloud_sql_proxy -instances="catalyst-market:us-central1:catalyst"=tcp:3306`
+`./cloud_sql_proxy -instances="catalyst-market:us-central1:catalyst"=tcp:3307`
 
-This launches a local service listening on 3306, which connects to our instance on Google Cloud Platform.
+This launches a local service listening on 3307, which connects to our instance on Google Cloud Platform.
 Change the port number if needed.
 
-To connect to the local service *and thus also our cloud instance*, run:
+To connect to the local service **and thus also our cloud instance**, run:
 
-`mysql -h 127.0.0.1 --port 3306 -u [MYSQL_USER] -p` then enter `[MYSQL_PASSWORD]`
+`mysql -h 127.0.0.1 --port 3307 -u [MYSQL_USER] -p` then enter `[MYSQL_PASSWORD]`
 
-Notice: *ALL CHANGES MADE HERE APPLY TO OUR CLOUD INSTANCE*
+Notice: **ALL CHANGES MADE HERE APPLY TO OUR CLOUD INSTANCE**
 
 ## Deploy to Google Cloud Platform
 
@@ -73,4 +76,4 @@ Install Cloud SDK: https://cloud.google.com/sdk/downloads
 
 `gcloud app deploy --project catalyst-market`
 
-Notice: *THIS DEPLOYS A NEW VERSION TO GOOGLE CLOUD*
+Notice: **THIS DEPLOYS A NEW VERSION TO GOOGLE CLOUD**

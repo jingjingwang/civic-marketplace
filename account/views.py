@@ -9,7 +9,7 @@ def index(request):
 
 def login(request):
     if request.method == 'GET':
-        return redirect('account:index')
+        return render(request, 'account/login.html')
     try:
         user = User.objects.get(email=request.POST['email'])
     except (KeyError, User.DoesNotExist):
@@ -19,7 +19,7 @@ def login(request):
         error(request, 'Invalid password.')
         return redirect('account:login')
     request.session['user_id'] = user.id
-    return redirect('dashboard:login')
+    return redirect('dashboard:index')
 
 def logout(request):
     if 'user_id' in request.session:

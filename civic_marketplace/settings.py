@@ -92,22 +92,22 @@ if os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine'):
     CSRF_COOKIE_SECURE = True
     DEBUG = False
 else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
     #DATABASES = {
     #    'default': {
-    #        'ENGINE': 'django.db.backends.mysql',
-    #        'HOST': '127.0.0.1',
-    #        'PORT': '3306',
-    #        'NAME': 'catalyst',
-    #        'USER': 'jwang',
-    #        'PASSWORD': 'jwang',
+    #        'ENGINE': 'django.db.backends.sqlite3',
+    #        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     #    }
     #}
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'HOST': '127.0.0.1',
+            'PORT': '3307',
+            'NAME': 'catalyst',
+            'USER': 'jwang',
+            'PASSWORD': 'jwang',
+        }
+    }
     SECURE_SSL_REDIRECT = False
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = False

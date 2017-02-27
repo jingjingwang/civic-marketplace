@@ -15,7 +15,7 @@ class Job(models.Model):
     identity = models.CharField(max_length=50)
     location = models.CharField(max_length=100)
     #time = models.DateTimeField(default=timezone.now, blank=True)
-    time = models.CharField(max_length=40)
+    time = models.CharField(max_length=50)
     thumb = models.URLField()
     def __str__(self):
         return '%s' % (self.title)
@@ -25,12 +25,12 @@ class Involve(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
 
 class Skill(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=50)
     def __str__(self):
         return '%s' % (self.name)
 
 class Cause(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=50)
     def __str__(self):
         return '%s' % (self.name)
 

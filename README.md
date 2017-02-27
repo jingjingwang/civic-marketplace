@@ -72,8 +72,18 @@ Notice: **ALL CHANGES MADE HERE APPLY TO OUR CLOUD INSTANCE**
 
 ## Deploy to Google Cloud Platform
 
+`python manage.py collectstatic`
+
 Install Cloud SDK: https://cloud.google.com/sdk/downloads
 
 `gcloud app deploy --project catalyst-market`
 
 Notice: **THIS DEPLOYS A NEW VERSION TO GOOGLE CLOUD**
+
+## Test account
+
+username: test
+
+email: test@test
+
+password: testtest

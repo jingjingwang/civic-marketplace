@@ -84,6 +84,13 @@ Notice: **THIS DEPLOYS A NEW VERSION TO GOOGLE CLOUD**
 
 username: test
 
-email: test@test
-
 password: testtest
+
+## Admin account
+
+Admin URI: https://catalyst-market.appspot.com/admin
+
+username: catalyst
+
+password: thegotoplace
+

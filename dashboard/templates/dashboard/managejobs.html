@@ -43,7 +43,7 @@
                     <div class="col-md-3 text-center">
 						<a href="{% url 'dashboard:manage_one_job' job.id %}">
 						<div class="cover-img-div">
-							<img class="img-portfolio img-responsive" src="{% static job.thumb %}">
+							<img class="img-portfolio img-responsive" src="{{ job.thumb }}">
                     	</div>
 						<h4>{{ job.title }}</h4>
 						</a>

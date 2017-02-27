@@ -6,7 +6,7 @@ from .models import Job, Involve, Cause, Skill, JobCause, JobSkill
 from account.models import UserCause, UserSkill, UserIdentity
 from mimetypes import guess_extension
 import random
-import tempfile
+from google.cloud import storage
 
 def get_user_by_id(request):
     if 'user_id' not in request.session:
@@ -80,7 +80,8 @@ def manage_one_job(request, job_id):
     request.session['job_id'] = job_id
     return render(request, 'dashboard/manage_one_job.html', {
         'user':user, 'job':job, 'job_skills':Skill.objects.filter(jobskill__job=job), 'job_causes':Cause.objects.filter(jobcause__job=job),
-        'skills':Skill.objects.all(), 'causes':Cause.objects.all()
+        'skills':Skill.objects.all(), 'causes':Cause.objects.all(),
+        'involves':Involve.objects.filter(job=job)
     })
 
 def jobdetail(request, job_id):
@@ -119,14 +120,16 @@ def participate(request):
 class UploadFileForm(forms.Form):
     file = forms.FileField()
 
-def handle_uploaded_file(fname, f):
-    with open('dashboard/static/%s' % fname, 'wb+') as img:
-        try:
-            for chunk in f.chunks():
-                img.write(chunk)
-        finally:
-            img.close()
-    return img.name
+def handle_uploaded_file(f, job_id):
+    content_type = guess_extension(f.content_type)
+    filename = 'job_cover_%d%s' % (job_id, content_type)
+    client = storage.Client()
+    bucket = client.get_bucket('catalyst-market.appspot.com')
+    blob = bucket.get_blob('jobs_cover_img/' + filename)
+    if blob is None: blob = bucket.blob('jobs_cover_img/' + filename)
+    for chunk in f.chunks():
+        blob.upload_from_string(chunk)
+    return blob.public_url
 
 def addjob(request):
     user = get_user_by_id(request)
@@ -144,8 +147,7 @@ def addjob(request):
               identity=request.POST['identity'], location=request.POST['location'], time=request.POST['time'], thumb=img)
         job.save()
     if 'cover' in request.FILES and len(request.FILES['cover']) > 0:
-        img = 'dashboard/img/jobs/job_cover_%d%s' % (job.id, guess_extension(request.FILES['cover'].content_type))
-        handle_uploaded_file(img, request.FILES['cover'])
+        img = handle_uploaded_file(request.FILES['cover'], job.id)
         job.thumb = img
     job.save()
     JobSkill.objects.filter(job=job).delete()

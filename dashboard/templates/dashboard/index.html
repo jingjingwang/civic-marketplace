@@ -43,7 +43,7 @@
                     {% if forloop.first %}<div class="row">{% endif %}
                     <div class="col-md-3  text-center">
                         <a href="{% url 'dashboard:jobdetail' job.id %}">
-							<div class="cover-img-div"><img class="img-portfolio img-responsive" src="{% static job.thumb %}"></div>
+							<div class="cover-img-div"><img class="img-portfolio img-responsive" src="{{ job.thumb }}"></div>
 							<h4>{{ job.title }}</h4>
 	                    </a>
                    </div>
@@ -58,7 +58,7 @@
                     {% if forloop.first %}<div class="row">{% endif %}
                     <div class="col-md-3 text-center">
 						<a href="{% url 'dashboard:jobdetail' job.id %}">
-							<div class="cover-img-div"><img class="img-portfolio img-responsive" src="{% static job.thumb %}"></div>
+							<div class="cover-img-div"><img class="img-portfolio img-responsive" src="{{ job.thumb }}"></div>
 						<h4>{{ job.title }}</h4>
 						</a>
                     </div>

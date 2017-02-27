@@ -53,11 +53,25 @@
                 	<div class="form-group">
                     	<h4>Change the cover image</h4>
 						<div class="cover-img-div">
-                    		<img class="img-portfolio img-responsive" src="{% static job.thumb %}">
+                    		<img class="img-portfolio img-responsive" src="{{ job.thumb }}">
 						</div>
                     	<input type="file" class="form-control-file" id="cover" name="cover" id="upload" />
 					</div>
                 </div>
+	            <div class="row">
+                	<div class="col-md-12">
+            		<hr>
+                	<h4>Registered Users</h4>
+	                	{% for involve in involves %}
+                        	{% if forloop.first %}<div class="row">{% endif %}
+                        	<div class="col-md-3">
+                               	<h5>{{ involve.participant }}</h5>
+                        	</div>
+                        {% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}
+                        {% if forloop.last %}</div>{% endif %}
+                    	{% endfor %}
+                	</div>
+            	</div>
 	            <div class="row">
                 	<div class="col-md-12">
             		<hr>

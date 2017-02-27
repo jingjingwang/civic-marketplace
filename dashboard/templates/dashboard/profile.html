@@ -19,31 +19,105 @@
 	  	<div class="col-md-2">
 	        <ul class="nav flex-column">
    	        	<li><a class="nav-link" href="{% url 'dashboard:index' %}">Overview</a></li>
-            	<li><a class="nav-link" href="{% url 'dashboard:addjob' %}">Publish a job</a></li>
-            	<li><a class="nav-link active" href="#">Profile</a></li>
+            	<li><a class="nav-link" href="{% url 'dashboard:addjob' %}">Publish an Event</a></li>
+                <li><a class="nav-link" href="{% url 'dashboard:managejobs' %}">Manage Events</a></li>
+            	<li><a class="nav-link active" href="#">My Profile</a></li>
         	</ul>
 	  	</div>
+        {% if messages %}
+            {% for message in messages %}
+                <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        <form id="addjob-form" action="{% url 'account:change' %}" method="post" role="form">
+        {% csrf_token %}
   		<div class="col-md-10">
-            {% if messages %}
-                {% for message in messages %}
-                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-                {% endfor %}
-            {% endif %}
-            <form id="addjob-form" action="{% url 'account:change' %}" method="post" role="form">
-            {% csrf_token %}
-			<label for="email">My email</label>
-			<input type="email" name="email" class="form-control" placeholder="{{ user.email }}" value="{{ user.email }}">
 			<hr>
-			<label for="password">New password</label>
-			<input type="password" name="password" class="form-control" value="">
-			<label for="password">Confirm new password</label>
-			<input type="password" name="confirm-password" class="form-control" value="">
+			<h3>Personal Information</h3>
+	  		<div class="row form-group">
+	           	<div class="col-md-2">
+ 					<label for="email">My email</label>
+				</div>
+	           	<div class="col-md-3">
+					<input type="email" name="email" class="form-control" placeholder="{{ user.email }}" value="{{ user.email }}">
+				</div>
+			</div>
+	  		<div class="row form-group">
+	           	<div class="col-md-2">
+					<label for="password">New password</label>
+				</div>
+	           	<div class="col-md-3">
+					<input type="password" name="password" class="form-control" value="">
+				</div>
+			</div>
+	  		<div class="row form-group">
+	           	<div class="col-md-2">
+					<label for="password">Confirm new password</label>
+				</div>
+	           	<div class="col-md-3">
+					<input type="password" name="confirm-password" class="form-control" value="">
+				</div>
+   	    	</div>
+			<hr>
+			<h3>Identities</h3>
+	  		<div class="row form-group">
+	           	<div class="col-md-2">
+					<label for="identity">Current identities</label>
+				</div>
+	           	<div class="col-md-3">
+		            {% for user_identity in user_identities %}
+       		        	<h5>{{ user_identity.identity }}</h5>
+           			{% endfor %}
+				</div>
+   	    	</div>
+	  		<div class="row form-group">
+	           	<div class="col-md-2">
+					<label for="identity">Add a new identity</label>
+				</div>
+	           	<div class="col-md-3">
+					<input type="text" name="identity" class="form-control" value="">
+				</div>
+   	    	</div>
+			<hr>
+			<h3>Interested Causes</h3>
+  			<div class="row">
+            	<div class="col-md-12">
+                    {% for cause in causes %}
+                        {% if forloop.first %}<div class="row">{% endif %}
+                        <div class="col-md-3">
+                            <label class="button-check">
+                            	<input type="checkbox" name="causes" value="{{ cause.name }}" {% if cause in user_causes %}checked{% endif %}>
+                                <h5>{{ cause.name }}</h5>
+							</label>
+                        </div>
+                       {% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}
+                       {% if forloop.last %}</div>{% endif %}
+                    {% endfor %}
+				</div>
+			</div>
+			<hr>
+			<h3>Skills</h3>
+  			<div class="row">
+            	<div class="col-md-12">
+                    {% for skill in skills %}
+                        {% if forloop.first %}<div class="row">{% endif %}
+                        <div class="col-md-3">
+                            <label class="button-check">
+                            	<input type="checkbox" name="skills" value="{{ skill.name }}" {% if skill in user_skills %}checked{% endif %}>
+                                <h5>{{ skill.name }}</h5>
+							</label>
+                        </div>
+                       {% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}
+                       {% if forloop.last %}</div>{% endif %}
+                    {% endfor %}
+				</div>
+			</div>
+			<hr>
+   	    	<input type="submit" class="btn btn-primary" value="Save Changes">
 			<input type="text" name="user_id" style="display:none" value="{{ user.id }}">
 			<input type="text" name="username" style="display:none" value="{{ user.username }}">
-            <input type="submit" class="btn btn-primary" value="Save Changes">
-            </form>
-        </div>
-    </div>
-  </div>
+    	</div>
+    	</form>
+	</div>
 </body>
 </html>

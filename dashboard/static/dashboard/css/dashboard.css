@@ -3,6 +3,33 @@ body {
 }
 
 .nav > li > a.nav-link.active {
-	background-color: #4CAF50;
+	background-color: #0088cc;
+	color: white;
+}
+
+.cover-img-div {
+	min-height:200px;
+	max-height:200px;
+	overflow:hidden;
+	display:flex;
+	align-items:center;
+}
+
+.cover-img-div > img {
+	object-fit:cover;
+	min-height:200px;
+}
+
+.button-check input {
+    display: none;
+}
+
+.button-check input + h5 {
+	padding: 5px 20px 5px 5px;
+    border-radius: 6px;
+}
+
+.button-check input:checked + h5 {
+	background-color: #0088cc;
 	color: white;
 }

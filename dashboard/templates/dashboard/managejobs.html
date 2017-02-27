@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <title>CataLyst - Dashboard</title>
+    <!-- Bootstrap Core CSS -->
+	<link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Custom CSS -->
+	<link href="{% static 'dashboard/css/dashboard.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+	{% include "landing/navbar.html" %}
+	<div class="container-fluid row">
+	  	<div class="col-md-2">
+            <ul class="nav flex-column">
+                <li><a class="nav-link" href="{% url 'dashboard:index' %}">Overview</a></li>
+                <li><a class="nav-link" href="{% url 'dashboard:addjob' %}">Publish an Event</a></li>
+                <li><a class="nav-link active" href="{% url 'dashboard:managejobs' %}">Manage Events</a></li>
+                <li><a class="nav-link" href="{% url 'dashboard:profile' %}">My Profile</a></li>
+            </ul>
+	  	</div>
+
+        <main class="col-md-10">
+			{% if messages %}
+				<ul class="messages">
+   					{% for message in messages %}
+			    		<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+				        	{{ message }}
+					    </li>
+				    {% endfor %}
+				</ul>
+			{% endif %}
+	  		<div class="row">
+                <hr class="small">
+                <h3>Events Released by Me</h3>
+                {% for job in released_jobs %}
+                    {% if forloop.first %}<div class="row">{% endif %}
+                    <div class="col-md-3 text-center">
+						<a href="{% url 'dashboard:manage_one_job' job.id %}">
+						<div class="cover-img-div">
+							<img class="img-portfolio img-responsive" src="{% static job.thumb %}">
+                    	</div>
+						<h4>{{ job.title }}</h4>
+						</a>
+                    </div>
+                    {% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}
+                    {% if forloop.last %}</div>{% endif %}
+                {% endfor %}
+			</div>
+        </main>
+    </div>
+  </div>
+</body>
+</html>

@@ -39,11 +39,11 @@ Change the `DATABASES` section in `civic_marketplace/settings.py` accordingly to
 
 ### Populate the database
 
-`python manage.py makemigrations`
-
-`python manage.py migrate`
+`./populate.sh`
 
 Check if django tables are created in your selected backend.
+
+Edit `populate.sh` if necessary.
 
 ### Run the server on localhost
 

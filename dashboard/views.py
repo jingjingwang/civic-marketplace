@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.messages import error
+from django.contrib.messages import error, success
 from django.contrib.auth.models import User
 from django import forms
 from .models import Job, Involve, Cause, Skill, JobCause, JobSkill
@@ -36,17 +36,17 @@ def get_involve(job, user):
 def index(request):
     user = get_user_by_id(request)
     if user is None: return redirect('account:index')
-    user_jobs = []
-    try:
-        involves = Involve.objects.filter(participant=user.id)
-        for involve in involves:
-            user_jobs.append(Job.objects.get(id=involve.job.id))
-    except (KeyError, Involve.DoesNotExist, Job.DoesNotExist):
-        pass
+    past_jobs = []
+    current_jobs = []
+    involves = Involve.objects.filter(participant=user.id)
+    for involve in involves:
+        job = Job.objects.get(id=involve.job.id)
+        if job.past: past_jobs.append(job)
+        else: current_jobs.append(job)
+
     recommended_jobs = []  
-    # taking all the remaining jobs for now
     for job in Job.objects.all():
-        if job not in user_jobs:
+        if job not in past_jobs and job not in current_jobs:
             w_cause = w_skill = 0
             causes = Cause.objects.filter(usercause__user=user)
             for jobcause in JobCause.objects.filter(job=job):
@@ -58,15 +58,17 @@ def index(request):
     recommended_jobs.sort(key=lambda x: x[1], reverse=True)
      
     return render(request, 'dashboard/index.html', { 
-        'user':user, 'user_jobs':user_jobs, 'recommended_jobs':[j[0] for j in recommended_jobs],
+        'user':user, 'past_jobs':past_jobs, 'current_jobs':current_jobs,
+        'recommended_jobs':[j[0] for j in recommended_jobs],
     })
 
 def managejobs(request):
     user = get_user_by_id(request)
     if user is None: return redirect('account:index')
-    released_jobs = Job.objects.filter(publisher=user)  
+    upcoming_jobs = Job.objects.filter(publisher=user, past=False)  
+    past_jobs = Job.objects.filter(publisher=user, past=True)
     return render(request, 'dashboard/managejobs.html', { 
-        'user':user, 'released_jobs':released_jobs, 
+        'user':user, 'upcoming_jobs':upcoming_jobs, 'past_jobs':past_jobs
     })
 
 def manage_one_job(request, job_id):
@@ -81,7 +83,7 @@ def manage_one_job(request, job_id):
     return render(request, 'dashboard/manage_one_job.html', {
         'user':user, 'job':job, 'job_skills':Skill.objects.filter(jobskill__job=job), 'job_causes':Cause.objects.filter(jobcause__job=job),
         'skills':Skill.objects.all(), 'causes':Cause.objects.all(),
-        'involves':Involve.objects.filter(job=job)
+        'involved_users':User.objects.filter(involve__job=job)
     })
 
 def jobdetail(request, job_id):
@@ -94,9 +96,13 @@ def jobdetail(request, job_id):
         error(request, 'The job does not exist.')
         return redirect('dashboard:index')
     request.session['job_id'] = job_id
-    participated = len(get_involve(job, user)) > 0
+    try:
+        involve = Involve.objects.get(job=job, participant=user)
+    except (KeyError, Involve.DoesNotExist):
+        involve = None
     return render(request, 'dashboard/jobdetail.html', {
-        'action': 'Unparticipate' if participated else 'Participate',
+        'involve':involve,
+        #'action': 'Unparticipate' if involves > 0 else 'Participate',
         'user':user, 'job':job, 'skills':Skill.objects.filter(jobskill__job=job), 'causes':Cause.objects.filter(jobcause__job=job),
     })
 
@@ -149,6 +155,7 @@ def addjob(request):
     if 'cover' in request.FILES and len(request.FILES['cover']) > 0:
         img = handle_uploaded_file(request.FILES['cover'], job.id)
         job.thumb = img
+    job.past = 'done' in request.POST
     job.save()
     JobSkill.objects.filter(job=job).delete()
     for skill in request.POST.getlist('skills'):
@@ -170,3 +177,24 @@ def profile(request):
     user_identities = UserIdentity.objects.filter(user=user)
     return render(request, 'dashboard/profile.html', {'user':user, 'causes':causes, 'user_causes':user_causes, 'skills':skills, 'user_skills':user_skills, 'user_identities':user_identities})
 
+def public_profile(request, user_id):
+    user = User.objects.get(id=user_id)
+    causes = Cause.objects.filter(usercause__user=user)
+    skills = Skill.objects.filter(userskill__user=user)
+    involves = Involve.objects.filter(participant=user)
+    return render(request, 'dashboard/public_profile.html', {'user':user, 'skills':skills, 'causes':causes, 'involves':involves})
+
+def review(request):
+    if request.method == 'GET':
+        user = User.objects.get(id=request.GET['user_id'])
+        job = Job.objects.get(id=request.GET['job_id'])
+        involve = Involve.objects.get(participant=user, job=job)
+        return render(request, 'dashboard/review.html', {'user':user, 'job':job, 'involve':involve})
+    user = User.objects.get(id=request.POST['user_id'])
+    job = Job.objects.get(id=request.POST['job_id'])
+    involve = Involve.objects.get(participant=user, job=job)
+    involve.review = request.POST['review']
+    involve.score = request.POST['score']
+    involve.save()
+    success(request, 'Review added.')
+    return redirect('dashboard:manage_one_job', request.POST['job_id'])

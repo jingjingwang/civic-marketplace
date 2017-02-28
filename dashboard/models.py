@@ -17,12 +17,15 @@ class Job(models.Model):
     #time = models.DateTimeField(default=timezone.now, blank=True)
     time = models.CharField(max_length=50)
     thumb = models.URLField()
+    past = models.BooleanField(default=False)
     def __str__(self):
         return '%s' % (self.title)
 
 class Involve(models.Model):
     participant = models.ForeignKey(User, on_delete=models.CASCADE)
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    review = models.TextField(default='')
+    score = models.PositiveSmallIntegerField(default=0)
 
 class Skill(models.Model):
     name = models.CharField(max_length=50)

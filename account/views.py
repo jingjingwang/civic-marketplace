@@ -48,7 +48,8 @@ def register(request):
         user.save()
         request.session['user_id'] = user.id
         request.session.set_expiry(600)
-        return redirect('dashboard:index')
+        success(request, 'Tell us more about yourself')
+        return redirect('dashboard:profile')
     else:
         error(request, 'This username has been registered.')
         return redirect('account:register')

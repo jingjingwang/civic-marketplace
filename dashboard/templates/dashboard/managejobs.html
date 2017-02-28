@@ -25,7 +25,7 @@
             </ul>
 	  	</div>
 
-        <main class="col-md-10">
+        <div class="col-md-10">
 			{% if messages %}
 				<ul class="messages">
    					{% for message in messages %}
@@ -36,9 +36,24 @@
 				</ul>
 			{% endif %}
 	  		<div class="row">
-                <hr class="small">
-                <h3>Events Released by Me</h3>
-                {% for job in released_jobs %}
+                <hr>
+                <h3>Upcoming Events</h3>
+                {% for job in upcoming_jobs %}
+                    {% if forloop.first %}<div class="row">{% endif %}
+                    <div class="col-md-3 text-center">
+						<a href="{% url 'dashboard:manage_one_job' job.id %}">
+						<div class="cover-img-div">
+							<img class="img-portfolio img-responsive" src="{{ job.thumb }}">
+                    	</div>
+						<h4>{{ job.title }}</h4>
+						</a>
+                    </div>
+                    {% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}
+                    {% if forloop.last %}</div>{% endif %}
+                {% endfor %}
+                <hr>
+                <h3>Past Events</h3>
+                {% for job in past_jobs %}
                     {% if forloop.first %}<div class="row">{% endif %}
                     <div class="col-md-3 text-center">
 						<a href="{% url 'dashboard:manage_one_job' job.id %}">
@@ -52,7 +67,7 @@
                     {% if forloop.last %}</div>{% endif %}
                 {% endfor %}
 			</div>
-        </main>
+        </div>
     </div>
   </div>
 </body>

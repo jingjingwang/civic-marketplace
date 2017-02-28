@@ -26,6 +26,11 @@
                 <li><a class="nav-link" href="{% url 'dashboard:profile' %}">My Profile</a></li>
             </ul>
    	        </div>
+        	{% if messages %}
+            	{% for message in messages %}
+                	<p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            	{% endfor %}
+        	{% endif %}
             <form id="part-form" action="{% url 'dashboard:addjob' %}" method="post" role="form" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="col-md-10">
@@ -57,15 +62,20 @@
 						</div>
                     	<input type="file" class="form-control-file" id="cover" name="cover" id="upload" />
 					</div>
+					<label>
+                       	<input type="checkbox" name="done" {% if job.past %}checked{% endif %}> 
+						<span> This event has finished</span>
+                   	</label>
                 </div>
 	            <div class="row">
                 	<div class="col-md-12">
             		<hr>
                 	<h4>Registered Users</h4>
-	                	{% for involve in involves %}
+	                	{% for involved_user in involved_users %}
                         	{% if forloop.first %}<div class="row">{% endif %}
                         	<div class="col-md-3">
-                               	<h5>{{ involve.participant }}</h5>
+								<a href="{% url 'dashboard:user' involved_user.id %}">{{ involved_user.username }}</a>
+								<a href="{% url 'dashboard:review' %}?user_id={{ involved_user.id}}&job_id={{ job.id }}">Write a review</a>
                         	</div>
                         {% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}
                         {% if forloop.last %}</div>{% endif %}

@@ -1,5 +1,4 @@
 *.pyc
 */migrations/*
 *.log
-lib
 .DS_Store

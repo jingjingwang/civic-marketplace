@@ -2,13 +2,11 @@ from django.shortcuts import render, redirect
 from django.contrib.messages import error
 from django.contrib.auth.models import User
 from .models import Job, Involve
+from django.contrib.auth.decorators import login_required
 
 def get_user_by_id(request):
-    if 'user_id' not in request.session:
-        error(request, 'Your session has expired.')
-        return None
     try:
-        user = User.objects.get(id=request.session['user_id'])
+        user = User.objects.get(id= request.user.id)
     except (KeyError, User.DoesNotExist):
         error(request, 'User does not exist.')
         return None
@@ -28,6 +26,7 @@ def get_job_by_id(request):
 def get_involve(job, user):
     return Involve.objects.filter(job=job, participant=user)
 
+@login_required(login_url='/account/')
 def index(request):
     user = get_user_by_id(request)
     if user is None: return redirect('account:index')

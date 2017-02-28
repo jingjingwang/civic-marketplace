@@ -110,7 +110,7 @@ else:
     #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     #     }
     # }
-    #DATABASES = {
+    DATABASES = {
        'default': {
            'ENGINE': 'django.db.backends.mysql',
            'HOST': '127.0.0.1',

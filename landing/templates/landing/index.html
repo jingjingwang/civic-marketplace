@@ -10,7 +10,7 @@
     <meta name="author" content="">
 
     <title>CataLyst - A Marketplace for Social Goods</title>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <!-- Bootstrap Core CSS -->
 	<link href="{% static 'landing/css/bootstrap.min.css' %}" rel="stylesheet">
 
@@ -21,6 +21,8 @@
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 	-->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -40,7 +42,7 @@
             <h1>CataLyst</h1>
             <h3>A Marketplace for Social Goods</h3>
             <br>
-			<a href="{% url 'account:login' %}" class="btn btn-dark btn-lg">Make a Difference</a>
+			<a href="{% url 'account:login_view' %}" class="btn btn-dark btn-lg">Make a Difference</a>
         </div>
     </header>
 
@@ -62,7 +64,7 @@
                                         <i class="fa fa-cloud fa-stack-1x text-primary"></i>
                                     </span>
                                     <p>Make impact, use your skills, explore how you can make a difference.</p>
-                                    <a href="{% url 'account:login' %}" class="btn btn-default btn-lg">Explore Opportunities</a>
+                                    <a href="{% url 'account:login_view' %}" class="btn btn-default btn-lg">Explore Opportunities</a>
                                 </div>
                             </div>
 						</div>
@@ -76,7 +78,7 @@
                                         <i class="fa fa-cloud fa-stack-1x text-primary"></i>
                                     </span>
                                     <p>Find latents, manage volunteers, connect to people who care.</p>
-                                    <a href="{% url 'account:login' %}" class="btn btn-default btn-lg">Publish Your Events</a>
+                                    <a href="{% url 'account:login_view' %}" class="btn btn-default btn-lg">Publish Your Events</a>
                                 </div>
                             </div>
 						</div>
@@ -109,7 +111,7 @@
                        {% if forloop.counter|divisibleby:2 %}</div><div class="row">{% endif %}
                        {% if forloop.last %}</div>{% endif %}
                     {% endfor %}
-                    <a href="{% url 'account:login' %}" class="btn btn-dark">View More Items</a>
+                    <a href="{% url 'account:login_view' %}" class="btn btn-dark">View More Items</a>
                 </div>
             </div>
         </div>

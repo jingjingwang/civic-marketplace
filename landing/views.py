@@ -5,7 +5,7 @@ from dashboard.models import Job
 
 def index(request):
     jobs = Job.objects.all()
-    if 'user_id' in request.session:
-        user = User.objects.get(id=request.session['user_id'])
+    if request.user.is_authenticated:
+        user = request.user
     else: user = None
-    return render(request, 'landing/index.html', {'jobs':jobs, 'user':user})
+    return render(request, 'landing/index.html', {'jobs':jobs, 'user':  user})

@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^account/', include('account.urls'), name='account'),
     url(r'^dashboard/', include('dashboard.urls'), name='dashboard'),
     url(r'^admin/', admin.site.urls),
-    url(r'^', include('landing.urls'), name='landing'),
+    url('', include('social_django.urls', namespace='social')),
+    url(r'^', include('landing.urls'), name='landing')
 ]
 

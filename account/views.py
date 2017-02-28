@@ -1,28 +1,27 @@
 from django.shortcuts import render, redirect
 from django.contrib.messages import error, success
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate,login,logout
 from .models import UserCause, UserSkill, UserIdentity, Organization
 from dashboard.models import Cause, Skill
 
-def login(request):
+def login_view(request):
     if request.method == 'GET':
-        if 'user_id' in request.session:
+        if request.user.is_authenticated:
             return redirect('dashboard:index')
         return render(request, 'account/login.html')
-    try:
-        user = User.objects.get(username=request.POST['username'])
-    except (KeyError, User.DoesNotExist):
-        error(request, 'A user with this username does not exist.')
-        return redirect('account:login')
-    if not user.check_password(request.POST['password']):
-        error(request, 'Invalid password.')
-        return redirect('account:login')
-    request.session['user_id'] = user.id
-    return redirect('dashboard:index')
+    
+    user = authenticate(username=request.POST['username'], password=request.POST['password'])
+    if user is not None:
+        login(request, user)
+        return redirect('dashboard:index')
 
-def logout(request):
-    if 'user_id' in request.session:
-        del request.session['user_id']
+    error(request, 'A user with this username does not exist.')
+    return redirect('account:login_view')    
+    
+
+def logout_view(request):
+    logout(request)
     return redirect('landing:index')
 
 def register(request):
@@ -43,10 +42,14 @@ def register(request):
     try:
         user = User.objects.get(username=request.POST['username'])
     except (KeyError, User.DoesNotExist):
+        print ("got registration request")
         user = User(username=request.POST['username'], email=request.POST['email'])
         user.set_password(request.POST['password'])
         user.save()
-        request.session['user_id'] = user.id
+        user = authenticate(username=request.POST['username'], password=request.POST['password'])
+        login(request, user)
+        print ("Log in success after registering.")
+        return redirect('dashboard:index')
         request.session.set_expiry(600)
         success(request, 'Tell us more about yourself')
         return redirect('dashboard:profile')

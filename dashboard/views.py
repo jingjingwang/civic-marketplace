@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 
 def get_user_by_id(request):
     try:
-        user = User.objects.get(id= request.user.id)
+        user = User.objects.get(id=request.session['user_id'])
     except (KeyError, User.DoesNotExist):
         error(request, 'User does not exist.')
         return None
@@ -31,7 +31,7 @@ def get_job_by_id(request):
 def get_involve(job, user):
     return Involve.objects.filter(job=job, participant=user)
 
-@login_required(login_url='/account/')
+#@login_required(login_url='/account/')
 def index(request):
     user = get_user_by_id(request)
     if user is None: return redirect('account:index')
@@ -44,7 +44,7 @@ def index(request):
         else: current_jobs.append(job)
 
     recommended_jobs = []  
-    for job in Job.objects.all():
+    for job in Job.objects.filter(past=False):
         if job not in past_jobs and job not in current_jobs:
             w_cause = w_skill = 0
             causes = Cause.objects.filter(usercause__user=user)

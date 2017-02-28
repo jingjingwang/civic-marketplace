@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'social_django',
+    #'social_django',
     'django.contrib.staticfiles',
 ]
 
@@ -69,8 +69,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'social_django.context_processors.backends',
-                'social_django.context_processors.login_redirect',
+                #'social_django.context_processors.backends',
+                #'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -79,9 +79,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'civic_marketplace.wsgi.application'
 
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.twitter.TwitterOAuth',
-    'social_core.backends.facebook.FacebookOAuth2',
-    'social_core.backends.linkedin.LinkedinOAuth2',
+    #'social_core.backends.twitter.TwitterOAuth',
+    #'social_core.backends.facebook.FacebookOAuth2',
+    #'social_core.backends.linkedin.LinkedinOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -104,22 +104,22 @@ if os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine'):
     CSRF_COOKIE_SECURE = True
     DEBUG = False
 else:
-    # DATABASES = {
-    #     'default': {
-    #         'ENGINE': 'django.db.backends.sqlite3',
-    #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    #     }
-    # }
     DATABASES = {
-       'default': {
-           'ENGINE': 'django.db.backends.mysql',
-           'HOST': '127.0.0.1',
-           'PORT': '3307',
-           'NAME': 'catalyst',
-           'USER': 'jwang',
-           'PASSWORD': 'jwang',
-       }
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
+    #DATABASES = {
+    #   'default': {
+    #       'ENGINE': 'django.db.backends.mysql',
+    #       'HOST': '127.0.0.1',
+    #       'PORT': '3307',
+    #       'NAME': 'catalyst',
+    #       'USER': 'jwang',
+    #       'PASSWORD': 'jwang',
+    #   }
+    #}
     SECURE_SSL_REDIRECT = False
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = False

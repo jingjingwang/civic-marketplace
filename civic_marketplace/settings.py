@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/1.10/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.10/ref/settings/
 """
-
+from config import *
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -26,7 +26,9 @@ SECRET_KEY = 'vr72c089(q&ew6n6t)mob6$go3qp22%=6-bx%d&8-bi&t&v*x@'
 ALLOWED_HOSTS = [
   'carlise.cs.washington.edu', 
   'catalyst-market.appspot.com',
-  'localhost'
+  'localhost',
+  'test.com',
+  '127.0.0.1'
 ]
 
 # Application definition
@@ -102,13 +104,13 @@ if os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine'):
     CSRF_COOKIE_SECURE = True
     DEBUG = False
 else:
-    #DATABASES = {
+    # DATABASES = {
     #     'default': {
     #         'ENGINE': 'django.db.backends.sqlite3',
     #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     #     }
-    #}
-    DATABASES = {
+    # }
+    #DATABASES = {
        'default': {
            'ENGINE': 'django.db.backends.mysql',
            'HOST': '127.0.0.1',

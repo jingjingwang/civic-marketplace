@@ -39,11 +39,11 @@ Change the `DATABASES` section in `civic_marketplace/settings.py` accordingly to
 
 ### Populate the database
 
-`python manage.py makemigrations`
-
-`python manage.py migrate`
+`./populate.sh`
 
 Check if django tables are created in your selected backend.
+
+Edit `populate.sh` if necessary.
 
 ### Run the server on localhost
 
@@ -72,8 +72,25 @@ Notice: **ALL CHANGES MADE HERE APPLY TO OUR CLOUD INSTANCE**
 
 ## Deploy to Google Cloud Platform
 
+`python manage.py collectstatic`
+
 Install Cloud SDK: https://cloud.google.com/sdk/downloads
 
 `gcloud app deploy --project catalyst-market`
 
 Notice: **THIS DEPLOYS A NEW VERSION TO GOOGLE CLOUD**
+
+## Test account
+
+username: test
+
+password: testtest
+
+## Admin account
+
+Admin URI: https://catalyst-market.appspot.com/admin
+
+username: catalyst
+
+password: thegotoplace
+

@@ -22,11 +22,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'vr72c089(q&ew6n6t)mob6$go3qp22%=6-bx%d&8-bi&t&v*x@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
 
 ALLOWED_HOSTS = [
+<<<<<<< HEAD
   'carlise.cs.washington.edu',
   'catalyst-market.appspot.com'
+=======
+  'carlise.cs.washington.edu', 
+  'catalyst-market.appspot.com',
+  'localhost'
+>>>>>>> 5537cf0a8e1c69eec2bc5718d9750ceacf7318c9
 ]
 
 # Application definition
@@ -100,26 +105,28 @@ if os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine'):
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+    DEBUG = False
 else:
-    #DATABASES = {
-    #    'default': {
-    #        'ENGINE': 'django.db.backends.sqlite3',
-    #        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    #    }
-    #}
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'HOST': '127.0.0.1',
-            'PORT': '3306',
-            'NAME': 'catalyst',
-            'USER': 'jwang',
-            'PASSWORD': 'jwang',
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
+    #DATABASES = {
+    #    'default': {
+    #        'ENGINE': 'django.db.backends.mysql',
+    #        'HOST': '127.0.0.1',
+    #        'PORT': '3307',
+    #        'NAME': 'catalyst',
+    #        'USER': 'jwang',
+    #        'PASSWORD': 'jwang',
+    #    }
+    #}
     SECURE_SSL_REDIRECT = False
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = False
+    DEBUG = True
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators

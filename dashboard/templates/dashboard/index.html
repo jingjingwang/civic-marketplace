@@ -5,6 +5,7 @@
 
 <head>
     <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
     <title>CataLyst - Dashboard</title>
     <!-- Bootstrap Core CSS -->
 	<link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -19,7 +20,8 @@
 	  	<div class="col-md-2">
             <ul class="nav flex-column">
                 <li><a class="nav-link active" href="{% url 'dashboard:index' %}">Overview</a></li>
-                <li><a class="nav-link" href="{% url 'dashboard:addjob' %}">Publish a job</a></li>
+                <li><a class="nav-link" href="{% url 'dashboard:addjob' %}">Publish an Event</a></li>
+                <li><a class="nav-link" href="{% url 'dashboard:managejobs' %}">Manage Events</a></li>
                 <li><a class="nav-link" href="{% url 'dashboard:profile' %}">My Profile</a></li>
             </ul>
 	  	</div>
@@ -36,12 +38,12 @@
 					</ul>
 				{% endif %}
                 <hr class="small">
-                <h3>I'm involved in</h3>
+                <h3>Participated Events</h3>
                 {% for job in user_jobs %}
                     {% if forloop.first %}<div class="row">{% endif %}
                     <div class="col-md-3  text-center">
                         <a href="{% url 'dashboard:jobdetail' job.id %}">
-							<img class="img-portfolio img-responsive" src="{% static 'dashboard/img/placeholder.png' %}">
+							<div class="cover-img-div"><img class="img-portfolio img-responsive" src="{{ job.thumb }}"></div>
 							<h4>{{ job.title }}</h4>
 	                    </a>
                    </div>
@@ -51,27 +53,12 @@
 			</div>
 	  		<div class="row">
                 <hr class="small">
-                <h3>Jobs released by me</h3>
-                {% for job in released_jobs %}
-                    {% if forloop.first %}<div class="row">{% endif %}
-                    <div class="col-md-3 text-center">
-						<a href="{% url 'dashboard:jobdetail' job.id %}">
-						<img class="img-portfolio img-responsive" src="{% static 'dashboard/img/placeholder.png' %}">
-						<h4>{{ job.title }}</h4>
-						</a>
-                    </div>
-                    {% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}
-                    {% if forloop.last %}</div>{% endif %}
-                {% endfor %}
-			</div>
-	  		<div class="row">
-                <hr class="small">
-                <h3>You may find these interesting</h3>
+                <h3>These May Interest You</h3>
                 {% for job in recommended_jobs %}
                     {% if forloop.first %}<div class="row">{% endif %}
                     <div class="col-md-3 text-center">
 						<a href="{% url 'dashboard:jobdetail' job.id %}">
-						<img class="img-portfolio img-responsive" src="{% static 'dashboard/img/placeholder.png' %}">
+							<div class="cover-img-div"><img class="img-portfolio img-responsive" src="{{ job.thumb }}"></div>
 						<h4>{{ job.title }}</h4>
 						</a>
                     </div>

@@ -1,8 +1,17 @@
 from django.shortcuts import render, redirect
 from django.contrib.messages import error
 from django.contrib.auth.models import User
+<<<<<<< HEAD
 from .models import Job, Involve
 from django.contrib.auth.decorators import login_required
+=======
+from django import forms
+from .models import Job, Involve, Cause, Skill, JobCause, JobSkill
+from account.models import UserCause, UserSkill, UserIdentity
+from mimetypes import guess_extension
+import random
+from google.cloud import storage
+>>>>>>> 5537cf0a8e1c69eec2bc5718d9750ceacf7318c9
 
 def get_user_by_id(request):
     try:
@@ -38,15 +47,44 @@ def index(request):
     except (KeyError, Involve.DoesNotExist, Job.DoesNotExist):
         pass
     recommended_jobs = []  
-    released_jobs = []  
     # taking all the remaining jobs for now
     for job in Job.objects.all():
         if job not in user_jobs:
-            recommended_jobs.append(job)
-        if job.publisher == user:
-            released_jobs.append(job)
+            w_cause = w_skill = 0
+            causes = Cause.objects.filter(usercause__user=user)
+            for jobcause in JobCause.objects.filter(job=job):
+                if jobcause.cause in causes: w_cause += 1
+            skills = Skill.objects.filter(userskill__user=user)
+            for jobskill in JobSkill.objects.filter(job=job):
+                if jobskill.skill in skills: w_skill += 1
+            recommended_jobs.append((job, w_cause + w_skill))
+    recommended_jobs.sort(key=lambda x: x[1], reverse=True)
+     
     return render(request, 'dashboard/index.html', { 
-        'user':user, 'user_jobs':user_jobs, 'recommended_jobs':recommended_jobs, 'released_jobs':released_jobs, 
+        'user':user, 'user_jobs':user_jobs, 'recommended_jobs':[j[0] for j in recommended_jobs],
+    })
+
+def managejobs(request):
+    user = get_user_by_id(request)
+    if user is None: return redirect('account:index')
+    released_jobs = Job.objects.filter(publisher=user)  
+    return render(request, 'dashboard/managejobs.html', { 
+        'user':user, 'released_jobs':released_jobs, 
+    })
+
+def manage_one_job(request, job_id):
+    user = get_user_by_id(request)
+    if user is None: return redirect('account:index')
+    try:
+        job = Job.objects.get(id=job_id)
+    except (KeyError, Job.DoesNotExist):
+        error(request, 'The job does not exist.')
+        return redirect('dashboard:index')
+    request.session['job_id'] = job_id
+    return render(request, 'dashboard/manage_one_job.html', {
+        'user':user, 'job':job, 'job_skills':Skill.objects.filter(jobskill__job=job), 'job_causes':Cause.objects.filter(jobcause__job=job),
+        'skills':Skill.objects.all(), 'causes':Cause.objects.all(),
+        'involves':Involve.objects.filter(job=job)
     })
 
 def jobdetail(request, job_id):
@@ -62,7 +100,7 @@ def jobdetail(request, job_id):
     participated = len(get_involve(job, user)) > 0
     return render(request, 'dashboard/jobdetail.html', {
         'action': 'Unparticipate' if participated else 'Participate',
-        'user':user, 'job':job, 'publisher':job.publisher.username
+        'user':user, 'job':job, 'skills':Skill.objects.filter(jobskill__job=job), 'causes':Cause.objects.filter(jobcause__job=job),
     })
 
 def participate(request):
@@ -82,17 +120,56 @@ def participate(request):
         participate[0].delete()
         return redirect('dashboard:index')
 
+class UploadFileForm(forms.Form):
+    file = forms.FileField()
+
+def handle_uploaded_file(f, job_id):
+    content_type = guess_extension(f.content_type)
+    filename = 'job_cover_%d%s' % (job_id, content_type)
+    client = storage.Client()
+    bucket = client.get_bucket('catalyst-market.appspot.com')
+    blob = bucket.get_blob('jobs_cover_img/' + filename)
+    if blob is None: blob = bucket.blob('jobs_cover_img/' + filename)
+    for chunk in f.chunks():
+        blob.upload_from_string(chunk)
+    return blob.public_url
+
 def addjob(request):
     user = get_user_by_id(request)
     if user is None: return redirect('account:index')
+    causes = Cause.objects.all()
+    skills = Skill.objects.all()
+    user_identities = [str(user.username)] + [str(ui.identity) for ui in UserIdentity.objects.filter(user=user)]
     if request.method == 'GET':
-        return render(request, 'dashboard/addjob.html', {'user':user})
-    job = Job(title=request.POST['title'], description=request.POST['description'], publisher=user)
+        return render(request, 'dashboard/addjob.html', {'user':user, 'causes':causes, 'skills':skills, 'user_identities':user_identities})
+    if 'job_id' in request.POST:
+        job = Job.objects.get(id=request.POST['job_id'])
+    else:
+        img = 'landing/img/portfolio-%d.jpg' % random.randint(1, 4)
+        job = Job(title=request.POST['title'], description=request.POST['description'], publisher=user,
+              identity=request.POST['identity'], location=request.POST['location'], time=request.POST['time'], thumb=img)
+        job.save()
+    if 'cover' in request.FILES and len(request.FILES['cover']) > 0:
+        img = handle_uploaded_file(request.FILES['cover'], job.id)
+        job.thumb = img
     job.save()
-    return redirect('dashboard:index')
+    JobSkill.objects.filter(job=job).delete()
+    for skill in request.POST.getlist('skills'):
+        jobskill = JobSkill(job=job, skill=Skill.objects.get(name=skill))
+        jobskill.save()
+    JobCause.objects.filter(job=job).delete()
+    for cause in request.POST.getlist('causes'):
+        jobcause = JobCause(job=job, cause=Cause.objects.get(name=cause))
+        jobcause.save()
+    return redirect('dashboard:managejobs')
 
 def profile(request):
     user = get_user_by_id(request)
     if user is None: return redirect('account:index')
-    return render(request, 'dashboard/profile.html', {'user':user})
+    causes = Cause.objects.all()
+    user_causes = causes.filter(usercause__user=user)
+    skills = Skill.objects.all()
+    user_skills = skills.filter(userskill__user=user)
+    user_identities = UserIdentity.objects.filter(user=user)
+    return render(request, 'dashboard/profile.html', {'user':user, 'causes':causes, 'user_causes':user_causes, 'skills':skills, 'user_skills':user_skills, 'user_identities':user_identities})
 

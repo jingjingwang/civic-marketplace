@@ -1,17 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.messages import error
 from django.contrib.auth.models import User
-<<<<<<< HEAD
-from .models import Job, Involve
-from django.contrib.auth.decorators import login_required
-=======
 from django import forms
 from .models import Job, Involve, Cause, Skill, JobCause, JobSkill
 from account.models import UserCause, UserSkill, UserIdentity
 from mimetypes import guess_extension
 import random
 from google.cloud import storage
->>>>>>> 5537cf0a8e1c69eec2bc5718d9750ceacf7318c9
+from django.contrib.auth.decorators import login_required
 
 def get_user_by_id(request):
     try:

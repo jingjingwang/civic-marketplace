@@ -40,8 +40,7 @@ Uncomment the MySQL local service part in the `DATABASES` entry in `civic_market
 
 ### Populate the database
 
-`
-python manage.py makemigrations dashboard account
+`python manage.py makemigrations dashboard account
 python manage.py migrate
 python manage.py loaddata skills causes organizations preferredtimes
 `

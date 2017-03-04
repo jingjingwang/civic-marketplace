@@ -40,9 +40,11 @@ Uncomment the MySQL local service part in the `DATABASES` entry in `civic_market
 
 ### Populate the database
 
-`python manage.py makemigrations dashboard account
+`
+python manage.py makemigrations dashboard account
 python manage.py migrate
-python manage.py loaddata skills causes organizations preferredtimes`
+python manage.py loaddata skills causes organizations preferredtimes
+`
 
 Check if django tables are created in your selected backend.
 
@@ -52,7 +54,7 @@ If you met any migration problem and had to clean up everything, here is a [tuto
 
 `python manage.py runserver`
 
-The check the website in localhost:8000. 
+Then check the website in localhost:8000.
 
 You can also do:
 
@@ -77,7 +79,7 @@ Notice: **ALL CHANGES MADE HERE APPLY TO OUR CLOUD INSTANCE**
 
 Install Cloud SDK: https://cloud.google.com/sdk/downloads
 
-To deploy third-party libraries to google cloud:
+To include third-party libraries:
 
 `pip install -t lib/ django google-cloud django-social-auth`
 

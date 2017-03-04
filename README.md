@@ -1,16 +1,10 @@
 # A marketplace for social goods
 
-## Install django
+## Install libraries
 
-https://docs.djangoproject.com/en/1.10/intro/install/
+`pip install -r requirements.txt`
 
-For now the project uses Python 2.7 and django 1.10.
-
-## Install MySQL
-
-`pip install MySQL-python`
-
-`sudo apt-get install libmysqlclient-dev mysql-client`
+For now the project uses Python 2.7, be aware of possible issues if you have Python 3.
 
 ## Test locally
 
@@ -18,32 +12,47 @@ You can pick either SQLite or MySQL for local testing.
 
 ### SQLite
 
-Change the `DATABASES` section in `civic_marketplace/settings.py` to use SQLite.
+No need to do anything, but since our Google cloud app uses MySQL, be aware of possible inconsistencies between your local databases and the cloud.
 
 ### MySQL
 
-`sudo apt-get install mysql-server`
+`sudo apt-get update`
+
+`sudo apt-get install libmysqlclient-dev mysql-client mysql-server`
+
+If it's the first time for you to install `mysql-server`, a prompt should appear to ask you to set up the root password.
+
+Start your local MySQL service:
+
+`service mysql restart`
+
+By default, the service runs on port 3306.
+Check if the MySQL service is running:
+
+`ps aux | grep mysqld`
+
+Check if you can connect to your local MySQL server using root:
+
+`mysql -u root -p` then enter the root password.
 
 If you have not created the local MySQL database:
 `
 CREATE DATABASE catalyst;
-CREATE USER '[MYSQL_USER]' IDENTIFIED BY '[MYSQL_PASSWORD]';
-GRANT ALL ON *.* TO '[MYSQL_USER]';
+CREATE USER '[YOUR_MYSQL_USERNAME]' IDENTIFIED BY '[YOUR_MYSQL_PASSWORD]';
+GRANT ALL ON *.* TO '[YOUR_MYSQL_USER]';
 `
 
-Check if you can connect to your local MySQL server:
-
-`mysql -h 127.0.0.1 --port 3306 -u [MYSQL_USER] -p` then enter `[MYSQL_PASSWORD]`
-
-Change the `DATABASES` section in `civic_marketplace/settings.py` accordingly to use your username and password (and port number, if not 3306).
+Then change the `DATABASES` section in `civic_marketplace/settings.py` accordingly to use your username and password (and port number, if not 3306).
 
 ### Populate the database
 
-`./populate.sh`
+`python manage.py makemigrations dashboard account
+python manage.py migrate
+python manage.py loaddata skills causes organizations preferredtimes`
 
 Check if django tables are created in your selected backend.
 
-Edit `populate.sh` if necessary.
+If you met any migration problem and had to clean up everything, here is a [tutorial](https://simpleisbetterthancomplex.com/tutorial/2016/07/26/how-to-reset-migrations.html) on how to reset migrations. Be aware that you will lose all the data by doing this. It happens when old migrations scripts are not applicable to the new schema.
 
 ### Run the server on localhost
 
@@ -72,19 +81,21 @@ Notice: **ALL CHANGES MADE HERE APPLY TO OUR CLOUD INSTANCE**
 
 ## Deploy to Google Cloud Platform
 
+Install Cloud SDK: https://cloud.google.com/sdk/downloads
+
+To deploy third-party libraries to google cloud:
+
+`pip install -t lib/ django google-cloud django-social-auth`
+
+Collect static files:
+
 `python manage.py collectstatic`
 
-Install Cloud SDK: https://cloud.google.com/sdk/downloads
+Finally, deploy it:
 
 `gcloud app deploy --project catalyst-market`
 
 Notice: **THIS DEPLOYS A NEW VERSION TO GOOGLE CLOUD**
-
-## Test account
-
-username: test
-
-password: testtest
 
 ## Admin account
 
@@ -92,5 +103,5 @@ Admin URI: https://catalyst-market.appspot.com/admin
 
 username: catalyst
 
-password: thegotoplace
+password: catalyst
 

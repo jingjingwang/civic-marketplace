@@ -5,4 +5,4 @@ python manage.py makemigrations account
 python manage.py migrate
 python manage.py loaddata skills
 python manage.py loaddata causes
-# python manage.py loaddata testdata
+python manage.py loaddata preferredtimes

@@ -5,6 +5,7 @@
 
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>CataLyst - Dashboard</title>
     <!-- Bootstrap Core CSS -->
 	<link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -29,15 +30,19 @@
             	<li><a class="nav-link" href="{% url 'dashboard:profile' %}">My Profile</a></li>
         	</ul>
 	  	</div>
-  		<div class="col-md-10">
+  		<div class="col-md-6">
 			<hr>
 			<h3>{{ job.title }}</h3>
             <div class="form-group">
             	<h4 for="review">Write a review for {{ user.username }}</h4>
 		        <form id="addjob-form" action="{% url 'dashboard:review' %}" method="post" role="form">
 		        {% csrf_token %}	
+                <div class="form-group">
 				<input type="number" name="score" id="score" class="rating" value="{{ involve.score }}"/>
+				</div>
+                <div class="form-group">
                 <textarea class="form-control" tabindex="2" id="review" name="review" rows="5" placeholder="{{ involve.review }}"></textarea>
+				</div>
 	            <input type="submit" class="btn btn-primary" value="Done"/>
             	<input type="text" id="user_id" name="user_id" tabindex="3" style="display:none" value="{{ user.id }}"/>
             	<input type="text" id="job_id" name="job_id" tabindex="3" style="display:none" value="{{ job.id }}"/>

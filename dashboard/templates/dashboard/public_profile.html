@@ -5,6 +5,7 @@
 
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>CataLyst - Dashboard</title>
     <!-- Bootstrap Core CSS -->
 	<link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -23,6 +24,7 @@
 	<div class="container-fluid row">
 	  	<div class="col-md-2">
 	        <ul class="nav flex-column">
+				<hr>
    	        	<li><a class="nav-link" href="{% url 'dashboard:index' %}">Overview</a></li>
             	<li><a class="nav-link" href="{% url 'dashboard:addjob' %}">Publish an Event</a></li>
                 <li><a class="nav-link" href="{% url 'dashboard:managejobs' %}">Manage Events</a></li>
@@ -31,52 +33,36 @@
 	  	</div>
   		<div class="col-md-10">
 			<hr>
-			<h3>{{ user.username }}</h3>
-			<hr>
-			<h3>Past Reviews</h3>
   			<div class="row">
-            	<div class="col-md-12">
+            	<div class="col-md-8">
+					<div class="avatar-div"><img src="{{ user.avatar }}" class="img-portfolio img-responsive center-block"></img></div>
+					<div class="text-center"><h4>{{ user.username }}</h4></div>
+					<hr>
+					<h4>Interested Causes: </h4>
+                    {% for cause in causes %}
+                        <span>&nbsp;&nbsp;{{ cause.name }}&nbsp;&nbsp;</span>
+                    {% endfor %}
+					<br><br>
+					<h4>Skills:</h4>
+                    {% for skill in skills %}
+                        <span>&nbsp;&nbsp;{{ skill.name }}&nbsp;&nbsp;</span>
+                    {% endfor %}
+				</div>
+            	<div class="col-md-4 text-center">
+					<h3>Past Events</h3>
+					<div class="row">
+					<div class="row">
                     {% for involve in involves %}
-                        {% if forloop.first %}<div class="row">{% endif %}
-                        <div class="col-md-3">
-							<a href={% url 'dashboard:jobdetail' involve.job.id %}>{{ involve.job }}</a>
+                        <div class="col-md-10 col-md-offset-1 text-center">
+							<div class="cover-img-div"><img class="img-portfolio img-responsive center-block" src={{ involve.job.thumb }}></img></div>
+							<h4><a href={% url 'dashboard:jobdetail' involve.job.id %}>{{ involve.job }}</a></h4>
 							{% if involve.score > 0 %}<input type="number" name="score" id="score" class="rating" value="{{ involve.score }}"/>{% endif %}
 							{% if involve.review != "" %}<h5>{{ involve.review }}</h5>{% endif %}
                         </div>
-                       {% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}
                        {% if forloop.last %}</div>{% endif %}
                     {% endfor %}
 				</div>
 			</div>
-			<hr>
-			<h3>Interested Causes</h3>
-  			<div class="row">
-            	<div class="col-md-12">
-                    {% for cause in causes %}
-                        {% if forloop.first %}<div class="row">{% endif %}
-                        <div class="col-md-3">
-                            <h5>{{ cause.name }}</h5>
-                        </div>
-                       {% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}
-                       {% if forloop.last %}</div>{% endif %}
-                    {% endfor %}
-				</div>
-			</div>
-			<hr>
-			<h3>Skills</h3>
-  			<div class="row">
-            	<div class="col-md-12">
-                    {% for skill in skills %}
-                        {% if forloop.first %}<div class="row">{% endif %}
-                        <div class="col-md-3">
-                            <h5>{{ skill.name }}</h5>
-                        </div>
-                       {% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}
-                       {% if forloop.last %}</div>{% endif %}
-                    {% endfor %}
-				</div>
-			</div>
-			<hr>
     	</div>
 	</div>
 </body>

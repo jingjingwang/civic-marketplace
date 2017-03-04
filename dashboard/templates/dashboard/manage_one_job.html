@@ -5,6 +5,7 @@
 
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>CataLyst - Dashboard</title>
     <!-- Bootstrap Core CSS -->
 	<link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -20,6 +21,7 @@
         <div class="row">
 	        <div class="col-md-2">
             <ul class="nav flex-column">
+				<hr>
                 <li><a class="nav-link" href="{% url 'dashboard:index' %}">Overview</a></li>
                 <li><a class="nav-link" href="{% url 'dashboard:addjob' %}">Publish an Event</a></li>
                 <li><a class="nav-link active" href="{% url 'dashboard:managejobs' %}">Manage Events</a></li>
@@ -34,50 +36,76 @@
             <form id="part-form" action="{% url 'dashboard:addjob' %}" method="post" role="form" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="col-md-10">
-				<div class="row">
 				<hr>
-				<div class="col-md-8">
-                 	<div class="form-group">
-                    	<h4>Enter the title of the event</h4>
-                    	<input type="text" id="title" name="title" tabindex="1" class="form-control" placeholder="Title" value="{{ job.title }}">
-                 	</div>
-                 	<div class="form-group">
-                    	<h4 for="description">Describe the event in detail</h4>
-                    	<textarea class="form-control" tabindex="2" id="description" name="description" rows="6">{{ job.description }}</textarea>
-                	</div>
+				<div class="row">
+				<div class="col-md-4 text-center">
                 	<div class="form-group">
-                    	<h4>Enter the location</h4>
-						<input type="text" id="location" name="location" tabindex="3" class="form-control" placeholder="Location" value="{{ job.location }}">
-                	</div>
-                	<div class="form-group">
-                    	<h4>Enter the date and time</h4>
-                    	<input type='text' id="time" name="time" tabindex="4" class="form-control" value="{{ job.time }}" />
-                	</div>
-               	</div>
-				<div class="col-md-3">
-                	<div class="form-group">
-                    	<h4>Change the cover image</h4>
 						<div class="cover-img-div">
-                    		<img class="img-portfolio img-responsive" src="{{ job.thumb }}">
+                    		<img class="img-portfolio img-responsive center-block" src="{{ job.thumb }}">
 						</div>
-                    	<input type="file" class="form-control-file" id="cover" name="cover" id="upload" />
 					</div>
-					<label>
-                       	<input type="checkbox" name="done" {% if job.past %}checked{% endif %}> 
-						<span> This event has finished</span>
+                	<div class="form-group">
+                   		<label class="btn btn-primary btn-file">Change Cover Picture<input type="file" id="cover" name="cover" style="display:none;"></label>
+					</div>
+					<label class="btn btn-info">
+                       	<input type="checkbox" name="done" {% if job.past %}checked{% endif %} style="display:none;">This event has finished
                    	</label>
                 </div>
+				<div class="col-md-6 col-md-offset-1">
+					<div class="row">
+						<div class="col-md-4">
+       			           	<h4>Title</h4>
+                 		</div>
+						<div class="col-md-8">
+          			     	<input type="text" id="title" name="title" tabindex="1" class="form-control" placeholder="Title" value="{{ job.title }}">
+                 		</div>
+               		</div>
+					<div class="row">
+						<div class="col-md-4">
+                    		<h4 for="description">Describe it in detail</h4>
+                 		</div>
+						<div class="col-md-8">
+                    		<textarea class="form-control" tabindex="2" id="description" name="description" rows="6">{{ job.description }}</textarea>
+                 		</div>
+               		</div>
+					<div class="row">
+						<div class="col-md-4">
+                    		<h4>Location</h4>
+                 		</div>
+						<div class="col-md-8">
+							<input type="text" id="location" name="location" tabindex="3" class="form-control" placeholder="Location" value="{{ job.location }}">
+                 		</div>
+               		</div>
+					<div class="row">
+						<div class="col-md-4">
+                    		<h4>Start time</h4>
+                 		</div>
+						<div class="col-md-8">
+                    		<input type='text' id="start_time" name="start_time" tabindex="4" class="form-control" value="{{ job.start_time }}" />
+                 		</div>
+               		</div>
+					<div class="row">
+						<div class="col-md-4">
+                    		<h4>End time</h4>
+                 		</div>
+						<div class="col-md-8">
+                    		<input type='text' id="end_time" name="end_time" tabindex="4" class="form-control" value="{{ job.end_time }}" />
+                 		</div>
+               		</div>
+               	</div>
 	            <div class="row">
                 	<div class="col-md-12">
             		<hr>
                 	<h4>Registered Users</h4>
 	                	{% for involved_user in involved_users %}
                         	{% if forloop.first %}<div class="row">{% endif %}
-                        	<div class="col-md-3">
-								<a href="{% url 'dashboard:user' involved_user.id %}">{{ involved_user.username }}</a>
-								<a href="{% url 'dashboard:review' %}?user_id={{ involved_user.id}}&job_id={{ job.id }}">Write a review</a>
+							<div class="col-md-2 text-center">
+								<div class="avatar-div">
+									<img class="img-portfolio img-responsive center-block" src="{{ involved_user.avatar }}">
+								</div>
+								<h5><a href="{% url 'dashboard:user' involved_user.id %}">{{ involved_user.username }}</a></h5>
+								<a href="{% url 'dashboard:review' %}?user_id={{ involved_user.id}}&job_id={{ job.id }}"><label class="btn btn-primary">Write a review</label></a>
                         	</div>
-                        {% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}
                         {% if forloop.last %}</div>{% endif %}
                     	{% endfor %}
                 	</div>
@@ -87,15 +115,12 @@
             		<hr>
                 	<h4>Categories</h4>
 	                	{% for cause in causes %}
-                        	{% if forloop.first %}<div class="row">{% endif %}
-                        	<div class="col-md-3">
+                        	<div class="col-md-2">
 								<label class="button-check">
                                 	<input type="checkbox" name="causes" value="{{ cause.name }}" {% if cause in job_causes %}checked{% endif %}> 
                                 	<h5>{{ cause.name }}</h5>
                             	</label>
                         	</div>
-                        {% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}
-                        {% if forloop.last %}</div>{% endif %}
                     	{% endfor %}
                 	</div>
             	</div>
@@ -104,15 +129,12 @@
                 	<div class="col-md-12">
                 	<h4>Preferred skills</h4>
                     	{% for skill in skills %}
-                        	{% if forloop.first %}<div class="row">{% endif %}
-                        	<div class="col-md-3">
+                        	<div class="col-md-2">
 								<label class="button-check">
                                 	<input type="checkbox" name="skills" value="{{ skill.name }}" {% if skill in job_skills %}checked{% endif %}> 
                                 	<h5>{{ skill.name }}</h5>
                             	</label>
                         	</div>
-                       	{% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}
-                    	{% if forloop.last %}</div>{% endif %}
                     	{% endfor %}
                 	</div>
             	</div>

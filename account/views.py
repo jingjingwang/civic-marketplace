@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.messages import error, success
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
-from .models import UserCause, UserSkill, UserIdentity, Organization
-from dashboard.models import Cause, Skill
+from .models import User, Cause, Skill, UserIdentity, Organization, UserCause, UserSkill, PreferredTime, UserPreferredTime
+from mimetypes import guess_extension
+from google.cloud import storage
 
 def login_view(request):
     if request.method == 'GET':
@@ -20,7 +20,7 @@ def login_view(request):
         error(request, 'Invalid password.')
         return redirect('account:login_view')
     request.session['user_id'] = user.id
-    return redirect('dashboard:index')
+    return redirect('dashboard:profile')
 
     #if user is not None:
     #    return redirect('dashboard:index')
@@ -57,6 +57,16 @@ def register(request):
         error(request, 'This username has been registered.')
         return redirect('account:register')
 
+def handle_uploaded_file(f, user_id):
+    content_type = guess_extension(f.content_type)
+    filename = 'users_avatar/%d%s' % (user_id, content_type)
+    bucket = storage.Client().get_bucket('catalyst-market.appspot.com')
+    blob = bucket.get_blob(filename)
+    if blob is None: blob = bucket.blob(filename)
+    for chunk in f.chunks():
+        blob.upload_from_string(chunk)
+    return blob.public_url
+
 def change(request):
     if 'user_id' not in request.session:
         error(request, 'Invalid user.')
@@ -73,9 +83,9 @@ def change(request):
             error(request, 'Passwords do not match.')
             return redirect('dashboard:profile')
         user.set_password(request.POST['password'])
-    if 'email' in request.POST and (len(request.POST['email']) < 3 or '@' not in request.POST['email']):
-        error(request, 'Please enter a valid email.')
-        return redirect('dashboard:profile')
+    if 'avatar' in request.FILES and len(request.FILES['avatar']) > 0:
+        img = handle_uploaded_file(request.FILES['avatar'], user.id)
+        user.avatar = img
     user.email = request.POST['email']
     user.save()
     UserCause.objects.filter(user=user).delete()
@@ -88,6 +98,11 @@ def change(request):
         skill = Skill.objects.get(name=name)
         user_skill = UserSkill(user=user, skill=skill)
         user_skill.save()
+    UserPreferredTime.objects.filter(user=user).delete()
+    for name in request.POST.getlist('preferred_times'):
+        time = PreferredTime.objects.get(name=name)
+        user_preferred_time = UserPreferredTime(user=user, preferred_time=time)
+        user_preferred_time.save()
     identity = request.POST['identity'].strip()
     if len(identity) > 0:
         try:

@@ -5,6 +5,7 @@
 
 <head>
     <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
     <title>CataLyst - Dashboard</title>
     <!-- Bootstrap Core CSS -->
 	<link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -16,8 +17,9 @@
 <body>
 	{% include "landing/navbar.html" %}
 	<div class="container-fluid row">
-	  	<div class="col-md-2">
+	  	<div class="col-md-2 col-xs-12">
 	        <ul class="nav flex-column">
+				<hr>
    	        	<li><a class="nav-link" href="{% url 'dashboard:index' %}">Overview</a></li>
             	<li><a class="nav-link" href="{% url 'dashboard:addjob' %}">Publish an Event</a></li>
                 <li><a class="nav-link" href="{% url 'dashboard:managejobs' %}">Manage Events</a></li>
@@ -29,92 +31,111 @@
                 <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
             {% endfor %}
         {% endif %}
-		<h2>Tell us more about your interests</h2>
-        <form id="addjob-form" action="{% url 'account:change' %}" method="post" role="form">
+        <form id="addjob-form" action="{% url 'account:change' %}" method="post" role="form" enctype="multipart/form-data">
         {% csrf_token %}
-  		<div class="col-md-10">
-			<hr>
+		<hr>
+  		<div class="col-md-10 col-xs-12">
+			<h2>Tell us more about you!</h2>
+			<br>
 			<h3>Causes that I care about</h3>
   			<div class="row">
-            	<div class="col-md-12">
                     {% for cause in causes %}
-                        {% if forloop.first %}<div class="row">{% endif %}
-                        <div class="col-md-3">
+                        <div class="col-md-2 col-xs-4">
                             <label class="button-check">
                             	<input type="checkbox" name="causes" value="{{ cause.name }}" {% if cause in user_causes %}checked{% endif %}>
                                 <h5>{{ cause.name }}</h5>
 							</label>
                         </div>
-                       {% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}
-                       {% if forloop.last %}</div>{% endif %}
                     {% endfor %}
-				</div>
 			</div>
 			<hr>
-			<h3>Skills that I have</h3>
+			<h3>My Skills</h3>
   			<div class="row">
-            	<div class="col-md-12">
                     {% for skill in skills %}
-                        {% if forloop.first %}<div class="row">{% endif %}
-                        <div class="col-md-3">
+                        <div class="col-md-2 col-xs-4">
                             <label class="button-check">
                             	<input type="checkbox" name="skills" value="{{ skill.name }}" {% if skill in user_skills %}checked{% endif %}>
                                 <h5>{{ skill.name }}</h5>
 							</label>
                         </div>
-                       {% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}
-                       {% if forloop.last %}</div>{% endif %}
                     {% endfor %}
-				</div>
 			</div>
 			<hr>
-			<h3>Organizations that I represent</h3>
-	  		<div class="row form-group">
-	           	<div class="col-md-2">
-					<label for="identity">Current identities</label>
-				</div>
-	           	<div class="col-md-3">
-		            {% for user_identity in user_identities %}
-       		        	<h5>{{ user_identity.identity }}</h5>
-           			{% endfor %}
-				</div>
-   	    	</div>
-	  		<div class="row form-group">
-	           	<div class="col-md-2">
-					<label for="identity">Add an organization</label>
-				</div>
-	           	<div class="col-md-3">
-					<input type="text" name="identity" class="form-control" value="">
-				</div>
-   	    	</div>
-			<hr>
+			<h3>Preferred Time</h3>
+  			<div class="row">
+                    {% for preferred_time in preferred_times %}
+                        <div class="col-md-2 col-xs-4">
+                            <label class="button-check">
+                            	<input type="checkbox" name="preferred_times" value="{{ preferred_time.name }}" {% if preferred_time in user_preferred_times %}checked{% endif %}>
+                                <h5>{{ preferred_time.name }}</h5>
+							</label>
+                        </div>
+                    {% endfor %}
+			</div>
 
-			<h3>Personal Information</h3>
-	  		<div class="row form-group">
-	           	<div class="col-md-2">
- 					<label for="email">My email</label>
-				</div>
-	           	<div class="col-md-3">
-					<input type="email" name="email" class="form-control" placeholder="{{ user.email }}" value="{{ user.email }}">
-				</div>
-			</div>
 			<hr>
-	  		<div class="row form-group">
-	           	<div class="col-md-2">
-					<label for="password">New password</label>
+			<h3>Personal Information</h3>
+			<div class="row">
+           		<div class="col-md-2">
+					<div class="row">
+						<div class="form-group">
+                 			<div class="avatar-div">
+                     			<img class="img-portfolio img-responsive center-block" src="{{ user.avatar }}">
+                 			</div>
+               			</div>
+            		</div>
+					<div class="row text-center">
+						<label class="btn btn-primary btn-file">Change Profile Picture<input type="file" id="avatar" name="avatar" style="display:none;"></label>
+           			</div>
+           		</div>
+           		<div class="col-md-5">
+					<div class="row">
+	           			<div class="col-md-4">
+ 							<h5>My email</h5>
+						</div>
+	           			<div class="col-md-8">
+							<input type="email" name="email" class="form-control" placeholder="{{ user.email }}" value="{{ user.email }}">
+						</div>
+					</div>
+					<div class="row">
+	           			<div class="col-md-4">
+							<h5>New password</h5>
+						</div>
+	           			<div class="col-md-8">
+							<input type="password" name="password" class="form-control" value="">
+						</div>
+					</div>
+					<div class="row">
+	           			<div class="col-md-4">
+							<h5>Confirm new password</h5>
+						</div>
+	           			<div class="col-md-8">
+							<input type="password" name="confirm-password" class="form-control" value="">
+						</div>
+					</div>
 				</div>
-	           	<div class="col-md-3">
-					<input type="password" name="password" class="form-control" value="">
-				</div>
-			</div>
-	  		<div class="row form-group">
-	           	<div class="col-md-2">
-					<label for="password">Confirm new password</label>
-				</div>
-	           	<div class="col-md-3">
-					<input type="password" name="confirm-password" class="form-control" value="">
-				</div>
+           		<div class="col-md-4">
+					<div class="row">
+	           			<div class="col-md-4">
+ 							<h5>Representing</h5>
+						</div>
+	           			<div class="col-md-8">
+		            		{% for user_identity in user_identities %}
+       		        			<h5>{{ user_identity.identity }}</h5>
+           					{% endfor %}
+						</div>
+					</div>
+					<div class="row">
+	           			<div class="col-md-4">
+							<h5>Add an organization</h5>
+						</div>
+	           			<div class="col-md-8">
+							<input type="text" name="identity" class="form-control" value="">
+						</div>
+					</div>
+   	    		</div>
    	    	</div>
+			<hr>
    	    	<input type="submit" class="btn btn-primary" value="Save Changes">
 			<input type="text" name="user_id" style="display:none" value="{{ user.id }}">
 			<input type="text" name="username" style="display:none" value="{{ user.username }}">

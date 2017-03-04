@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib.messages import error, success
-from django.contrib.auth.models import User
+from django.db.models import Avg
 from django import forms
-from .models import Job, Involve, Cause, Skill, JobCause, JobSkill
-from account.models import UserCause, UserSkill, UserIdentity
 from mimetypes import guess_extension
 import random
 from google.cloud import storage
 from django.contrib.auth.decorators import login_required
+
+from .models import Job, Involve, JobCause, JobSkill
+from account.models import User, UserIdentity, Cause, Skill, UserCause, UserSkill, PreferredTime, UserPreferredTime
 
 def get_user_by_id(request):
     try:
@@ -99,10 +100,16 @@ def jobdetail(request, job_id):
         involve = Involve.objects.get(job=job, participant=user)
     except (KeyError, Involve.DoesNotExist):
         involve = None
+    other_users = User.objects.filter(involve__job=job)[:10]
+    for other_user in other_users:
+        t = Involve.objects.filter(participant=user).aggregate(Avg('score'))['score__avg']
+        #if t is None: other_user.score = 0
+        #else: other_user.score = int(t)
+        #TODO: filter None
+        other_user.score = int(5)
     return render(request, 'dashboard/jobdetail.html', {
-        'involve':involve,
-        #'action': 'Unparticipate' if involves > 0 else 'Participate',
-        'user':user, 'job':job, 'skills':Skill.objects.filter(jobskill__job=job), 'causes':Cause.objects.filter(jobcause__job=job),
+        'involve':involve, 'user':user, 'job':job, 'skills':Skill.objects.filter(jobskill__job=job), 'causes':Cause.objects.filter(jobcause__job=job),
+        'other_users':other_users
     })
 
 def participate(request):
@@ -149,8 +156,18 @@ def addjob(request):
     else:
         img = 'landing/img/portfolio-%d.jpg' % random.randint(1, 4)
         job = Job(title=request.POST['title'], description=request.POST['description'], publisher=user,
-              identity=request.POST['identity'], location=request.POST['location'], time=request.POST['time'], thumb=img)
+              identity=request.POST['identity'], location=request.POST['location'], start_time=request.POST['start_time'], end_time=request.POST['end_time'],
+              thumb=img)
         job.save()
+    job.title = request.POST['title']
+    job.description = request.POST['description']
+    job.publisher = user
+    job.identity = request.POST['identity']
+    job.location = request.POST['location']
+    if 'start_time' in request.POST:
+        job.start_time = request.POST['start_time']
+    if 'end_time' in request.POST:
+        job.end_time = request.POST['end_time']
     if 'cover' in request.FILES and len(request.FILES['cover']) > 0:
         img = handle_uploaded_file(request.FILES['cover'], job.id)
         job.thumb = img
@@ -174,7 +191,11 @@ def profile(request):
     skills = Skill.objects.all()
     user_skills = skills.filter(userskill__user=user)
     user_identities = UserIdentity.objects.filter(user=user)
-    return render(request, 'dashboard/profile.html', {'user':user, 'causes':causes, 'user_causes':user_causes, 'skills':skills, 'user_skills':user_skills, 'user_identities':user_identities})
+    return render(request, 'dashboard/profile.html', {
+        'user':user, 'causes':causes, 'user_causes':user_causes, 'skills':skills, 'user_skills':user_skills, 'user_identities':user_identities,
+        'preferred_times':PreferredTime.objects.all(),
+        'user_preferred_times':PreferredTime.objects.filter(userpreferredtime__user=user)
+    })
 
 def public_profile(request, user_id):
     user = User.objects.get(id=user_id)
@@ -195,5 +216,4 @@ def review(request):
     involve.review = request.POST['review']
     involve.score = request.POST['score']
     involve.save()
-    success(request, 'Review added.')
     return redirect('dashboard:manage_one_job', request.POST['job_id'])

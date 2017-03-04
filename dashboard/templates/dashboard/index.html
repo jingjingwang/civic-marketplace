@@ -19,6 +19,7 @@
 	<div class="container-fluid row">
 	  	<div class="col-md-2">
             <ul class="nav flex-column">
+				<hr>
                 <li><a class="nav-link active" href="{% url 'dashboard:index' %}">Overview</a></li>
                 <li><a class="nav-link" href="{% url 'dashboard:addjob' %}">Publish an Event</a></li>
                 <li><a class="nav-link" href="{% url 'dashboard:managejobs' %}">Manage Events</a></li>
@@ -36,9 +37,9 @@
 				    {% endfor %}
 				</ul>
 			{% endif %}
-	  		<div class="row">
+	  		<div class="row text-center">
                 <hr class="small">
-                <h3>Current Events</h3>
+                <h3>Participating</h3>
                 {% for job in current_jobs %}
                     {% if forloop.first %}<div class="row">{% endif %}
                     <div class="col-md-3  text-center">
@@ -51,7 +52,7 @@
                    {% if forloop.last %}</div>{% endif %}
                {% endfor %}
 			</div>
-	  		<div class="row">
+	  		<div class="row text-center">
                 <hr class="small">
                 <h3>These May Interest You</h3>
                 {% for job in recommended_jobs %}
@@ -66,7 +67,7 @@
                     {% if forloop.last %}</div>{% endif %}
                 {% endfor %}
 			</div>
-	  		<div class="row">
+	  		<div class="row text-center">
                 <hr class="small">
                 <h3>Participated Events</h3>
                 {% for job in past_jobs %}

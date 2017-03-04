@@ -5,18 +5,18 @@
 
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>CataLyst - Dashboard</title>
     <!-- Bootstrap Core CSS -->
 	<link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet">
     <!-- Custom CSS -->
 	<link href="{% static 'dashboard/css/dashboard.css' %}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
-    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
     <script src="{% static 'dashboard/js/bootstrap-rating-input.min.js' %}"></script>
-
 </head>
 
 <body>
@@ -26,58 +26,53 @@
         <div class="row">
 	        <div class="col-md-2">
             <ul class="nav flex-column">
+				<hr>
                 <li><a class="nav-link active" href="{% url 'dashboard:index' %}">Overview</a></li>
                 <li><a class="nav-link" href="{% url 'dashboard:addjob' %}">Publish an Event</a></li>
                 <li><a class="nav-link" href="{% url 'dashboard:managejobs' %}">Manage Events</a></li>
                 <li><a class="nav-link" href="{% url 'dashboard:profile' %}">My Profile</a></li>
             </ul>
    	        </div>
-            <div class="col-md-10">
+			<hr>
+            <div class="col-md-6">
 	        	<div class="row">
-	                <h2>{{ job.title }}</h2>
-           			<div class="col-md-3">
+           			<div class="col-md-6 text-center">
 						<div class="cover-img-div"><img class="img-portfolio img-responsive" src="{{ job.thumb }}"></div>
-                		<h4>Released by: {{ job.identity }}</h4>
+	                	<h3>{{ job.title }}</h3>
 					</div>
-				</div>
-	        	<div class="row">
-					<hr>
             		<div class="col-md-6">
-                        <h4>Time: {{ job.time }}</h4>
+                		<h4>Released by: {{ job.identity }}</h4>
+						<br>
+                        <h4>Start: {{ job.start_time }}</h4>
+                        <h4>End: {{ job.end_time }}</h4>
                         <h4>Location: {{ job.location }}</h4>
+						<br>
+						{% if not job.past %}
+       			     	<form id="part-form" action="{% url 'dashboard:participate' %}" method="post" role="form">
+            			{% csrf_token %}
+							<input type="submit" id="participate-submit" tabindex="1" class="btn btn-primary" value="{% if involve == None %}Participate{% else %}Unparticipate{% endif %}">
+                			<input type="text" id="user_id" name="user_id" tabindex="2" style="display:none" value="{{ user.id }}">
+                			<input type="text" id="job_id" name="job_id" tabindex="3" style="display:none" value="{{ job.id }}">
+                		</form>
+						{% endif %}
                     </div>
 				</div>
+				<hr>
 	        	<div class="row">
-					<hr>
-            		<div class="col-md-9">
-	                <h5>{{ job.description }}</h5>
+            		<div class="col-md-12">
+	                	<h4>{{ job.description }}</h4>
 					</div>
-				</div>
-	            <div class="row">
-            	<hr>
                 	<div class="col-md-12">
-                	<h4>Categories</h4>
+					<br>
+                	<h5>Categories: </h5>
 	                	{% for cause in causes %}
-                        	{% if forloop.first %}<div class="row">{% endif %}
-                        	<div class="col-md-3">
-								<h5>{{ cause.name }}</h5>
-                        	</div>
-                        {% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}
-                        {% if forloop.last %}</div>{% endif %}
+							<span>&nbsp;&nbsp; {{ cause.name }} &nbsp;&nbsp;</span>
                     	{% endfor %}
                 	</div>
-            	</div>
-            	<div class="row">
-            	<hr>
                 	<div class="col-md-12">
-                	<h4>Preferred skills</h4>
+                	<h5>Preferred skills: </h5>
                     	{% for skill in skills %}
-                        	{% if forloop.first %}<div class="row">{% endif %}
-                        	<div class="col-md-3">
-								<h5>{{ skill.name }}</h5>
-                        	</div>
-                       	{% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}
-                    	{% if forloop.last %}</div>{% endif %}
+							<span>&nbsp;&nbsp; {{ skill.name }} &nbsp;&nbsp;</span>
                     	{% endfor %}
                 	</div>
             	</div>
@@ -86,15 +81,23 @@
 					<h4>Reviews</h4>
 	                <input type="number" name="score" id="score" class="rating" value="{{ involve.score }}"/>
 					<h5>{{ involve.review }}</h5>
-				{% else %}
-            		<form id="part-form" action="{% url 'dashboard:participate' %}" method="post" role="form">
-            		{% csrf_token %}
-					<input type="submit" id="participate-submit" tabindex="1" class="btn btn-primary btn-lg" value="{% if involve == None %}Participate{% else %}Unparticipate{% endif %}">
-                	<input type="text" id="user_id" name="user_id" tabindex="2" style="display:none" value="{{ user.id }}">
-                	<input type="text" id="job_id" name="job_id" tabindex="3" style="display:none" value="{{ job.id }}">
-                </form>
 				{% endif %}
+				
             </div>
+            <div class="col-md-4 col-xs-12">
+				<h4>They are also going:</h4><br>
+				<div class="row">
+              	{% for other_user in other_users %}
+                    <div class="col-md-4 col-xs-6 text-center">
+                    	<div class="avatar-div">
+                    		<img class="img-portfolio img-responsive center-block" src="{{ other_user.avatar }}">
+                   		</div>
+                    	<h5><a href="{% url 'dashboard:user' other_user.id %}">{{ other_user.username }}</a></h5>
+						<input type="number" name="score" id="score" class="rating" value="{{ other_user.score }}"/>
+                    </div>
+               	{% endfor %}
+        		</div>
+        	</div>
         </div>
     </div>
 </body>

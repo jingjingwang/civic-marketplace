@@ -1,9 +1,10 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import User
 from django import forms
 from datetime import datetime
+
+from account.models import User, Skill, Cause
 
 class UploadFileForm(forms.Form):
     file = forms.FileField()
@@ -15,7 +16,8 @@ class Job(models.Model):
     identity = models.CharField(max_length=50)
     location = models.CharField(max_length=100)
     #time = models.DateTimeField(default=timezone.now, blank=True)
-    time = models.CharField(max_length=50)
+    start_time = models.CharField(max_length=50)
+    end_time = models.CharField(max_length=50)
     thumb = models.URLField()
     past = models.BooleanField(default=False)
     def __str__(self):
@@ -27,16 +29,6 @@ class Involve(models.Model):
     review = models.TextField(default='')
     score = models.PositiveSmallIntegerField(default=0)
 
-class Skill(models.Model):
-    name = models.CharField(max_length=50)
-    def __str__(self):
-        return '%s' % (self.name)
-
-class Cause(models.Model):
-    name = models.CharField(max_length=50)
-    def __str__(self):
-        return '%s' % (self.name)
-
 class JobSkill(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
@@ -44,5 +36,3 @@ class JobSkill(models.Model):
 class JobCause(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     cause = models.ForeignKey(Cause, on_delete=models.CASCADE)
-
-

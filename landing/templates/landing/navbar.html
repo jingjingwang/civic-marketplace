@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 
 {% load static %}
-<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-    <div class="container_fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collased" data-toggle="collapse" data-target="#myNavbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>                        
-            </button>
-            <ul class="nav navbar-nav">
-                <li><a class="navbar-brand" href="{% url 'landing:index' %}">CataLyst</a></li>
-            </ul>
-        </div>
-        <div class="collapse navbar-collapse" id="myNavbar">
-            <ul class="nav navbar-nav pull-right">
+<nav class="navbar navbar-default navbar-faded navbar-fixed-top">
+	<div class="container-fluid">
+		<!--
+		<div class="navbar-header">
+  		<button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#collapseContent" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+	    </button>
+		</div>
+		-->
+        <a class="navbar-brand" href="{% url 'landing:index' %}">CataLyst</a>
+
+		<div class="collapse navbar-collapse" id="collapseContent">
+            <ul class="nav navbar-nav navbar-right">
                 {% if user.id is not None %}
-                    <li><a href="{% url 'dashboard:index' %}">Hello {{user.username}}!</a></li>
-                    <li><a href="{% url 'account:logout_view' %}">Log Out</a></li>
+                <li class="nav-item active"><a class="nav-link" href="{% url 'dashboard:index' %}">Hello {{user.username}}!</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'account:logout_view' %}">Log Out</a></li>
                 {% else %}
-                    <li><a href="{% url 'account:register' %}">Register</a></li>
-                    <li><a href="{% url 'account:index' %}"> Log In</a></li>
+                <li class="nav-item"><a href="{% url 'account:index' %}"> Log In</a></li>
                 {% endif %}
             </ul>
-        </div>
-    </div>
+    	</div>
+  	</div>
 </nav>

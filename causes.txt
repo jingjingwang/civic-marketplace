@@ -1,12 +1,10 @@
-Environment
 Education
+Environment
 Community
-Health
-Income
-Family
 Employment
+Health
+Family
 Arts & Culture
-Disaster Response
 Equality
 Mental Wellness
 Crisis
@@ -14,3 +12,4 @@ Basic Needs
 Crime & Safety
 Veterans
 Housing
+Immigration

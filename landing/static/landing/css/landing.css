@@ -5,6 +5,12 @@
  */
 
 /* Global Styles */
+@media (min-width: 768px) {
+        nav.navbar { 
+            max-height: 50px;
+            overflow: hidden;
+        }
+    }
 
 html,
 body {

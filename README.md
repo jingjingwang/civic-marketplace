@@ -1,5 +1,3 @@
-# A marketplace for social goods
-
 ## Install libraries
 
 `pip install -r requirements.txt`
@@ -12,7 +10,7 @@ You can pick either SQLite or MySQL for local testing.
 
 ### SQLite
 
-No need to do anything, but since our Google cloud app uses MySQL, be aware of possible inconsistencies between your local databases and the cloud.
+No need to do anything, but since our Google cloud app uses MySQL, be aware of possible inconsistencies.
 
 ### MySQL
 
@@ -20,7 +18,7 @@ No need to do anything, but since our Google cloud app uses MySQL, be aware of p
 
 `sudo apt-get install libmysqlclient-dev mysql-client mysql-server`
 
-If it's the first time for you to install `mysql-server`, a prompt should appear to ask you to set up the root password.
+If it is your first time to install `mysql-server`, a prompt should appear to ask you to set up the root password.
 
 Start your local MySQL service:
 
@@ -36,13 +34,9 @@ Check if you can connect to your local MySQL server using root:
 `mysql -u root -p` then enter the root password.
 
 If you have not created the local MySQL database:
-`
-CREATE DATABASE catalyst;
-CREATE USER '[YOUR_MYSQL_USERNAME]' IDENTIFIED BY '[YOUR_MYSQL_PASSWORD]';
-GRANT ALL ON *.* TO '[YOUR_MYSQL_USER]';
-`
+`CREATE DATABASE catalyst;`
 
-Then change the `DATABASES` section in `civic_marketplace/settings.py` accordingly to use your username and password (and port number, if not 3306).
+Uncomment the MySQL local service part in the `DATABASES` entry in `civic_marketplace/settings.py`. Put your root password there.
 
 ### Populate the database
 
@@ -52,7 +46,7 @@ python manage.py loaddata skills causes organizations preferredtimes`
 
 Check if django tables are created in your selected backend.
 
-If you met any migration problem and had to clean up everything, here is a [tutorial](https://simpleisbetterthancomplex.com/tutorial/2016/07/26/how-to-reset-migrations.html) on how to reset migrations. Be aware that you will lose all the data by doing this. It happens when old migrations scripts are not applicable to the new schema.
+If you met any migration problem and had to clean up everything, here is a [tutorial](https://simpleisbetterthancomplex.com/tutorial/2016/07/26/how-to-reset-migrations.html) on how to reset migrations. Be aware that you will lose all the data by doing this. It happens when old migration scripts are not applicable to the new schema.
 
 ### Run the server on localhost
 
@@ -75,7 +69,7 @@ Change the port number if needed.
 
 To connect to the local service **and thus also our cloud instance**, run:
 
-`mysql -h 127.0.0.1 --port 3307 -u [MYSQL_USER] -p` then enter `[MYSQL_PASSWORD]`
+`mysql -h 127.0.0.1 --port 3307 -u catalyst -p` then enter `catalyst` as the password.
 
 Notice: **ALL CHANGES MADE HERE APPLY TO OUR CLOUD INSTANCE**
 

@@ -7,10 +7,10 @@ from google.cloud import storage
 
 def login_view(request):
     if request.method == 'GET':
-        #if request.user.is_authenticated:
-        #return redirect('dashboard:index')
+        if request.user.is_authenticated:
+            return redirect('dashboard:index')
         return render(request, 'account/login.html')
-    #user = authenticate(username=request.POST['username'], password=request.POST['password'])
+    
     try:
         user = User.objects.get(username=request.POST['username'])
     except (KeyError, User.DoesNotExist):
@@ -19,11 +19,12 @@ def login_view(request):
     if not user.check_password(request.POST['password']):
         error(request, 'Invalid password.')
         return redirect('account:login_view')
-    request.session['user_id'] = user.id
-    return redirect('dashboard:profile')
-
-    #if user is not None:
-    #    return redirect('dashboard:index')
+    user = authenticate(username=request.POST['username'], password=request.POST['password'])
+    if user is not None:
+       return redirect('dashboard:index')
+    error(request, 'User login failed. User could not be authenticated')
+    return redirect('account:login_view')
+    
 
 def logout_view(request):
     logout(request)
@@ -47,10 +48,10 @@ def register(request):
         user = User(username=request.POST['username'])
         user.set_password(request.POST['password'])
         user.save()
-        #user = authenticate(username=request.POST['username'], password=request.POST['password'])
-        #login(request, user)
+        user = authenticate(username=request.POST['username'], password=request.POST['password'])
+        login(request, user)
         #return redirect('dashboard:index')
-        request.session['user_id'] = user.id
+        # request.session['user_id'] = user.id
         request.session.set_expiry(600)
         return redirect('dashboard:profile')
     else:
@@ -71,7 +72,7 @@ def change(request):
     if 'user_id' not in request.session:
         error(request, 'Invalid user.')
         return redirect('dashboard:profile')
-    user = User.objects.get(id=request.session['user_id'])
+    user = User.objects.get(id=request.user.id)
     if 'username' not in request.POST or len(request.POST['username']) < 3:
         error(request, 'Username must contain at least 3 characters.')
         return redirect('dashboard:profile')

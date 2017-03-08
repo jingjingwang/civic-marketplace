@@ -13,9 +13,9 @@ class Job(models.Model):
     description = models.TextField()
     identity = models.CharField(max_length=50)
     location = models.CharField(max_length=100)
-    start_time = models.DateTimeField(default=timezone.now)
-    end_time = models.DateTimeField(default=timezone.now)
-    thumb = models.URLField()
+    start_time = models.DateTimeField(default=timezone.now, blank=True)
+    end_time = models.DateTimeField(default=timezone.now, blank=True)
+    thumb = models.URLField(blank=True)
     past = models.BooleanField(default=False)
     def __str__(self):
         return '%s' % (self.title)
@@ -23,13 +23,12 @@ class Job(models.Model):
 class JobForm(forms.ModelForm):
     class Meta:
         model = Job
-        fields = ('title', 'description', 'location', 'start_time', 'end_time', 'publisher')
+        fields = ('thumb', 'publisher', 'title', 'description', 'location', 'start_time', 'end_time')
         widgets = {
             'start_time': DateTimeWidget(attrs={'id':"start_time"}, usel10n=True, bootstrap_version=3),
             'end_time': DateTimeWidget(attrs={'id':"end_time"}, usel10n=True, bootstrap_version=3),
             'title': forms.Textarea(attrs={'rows': 1}),
             'description': forms.Textarea(attrs={'rows': 5}),
-            'publisher': forms.HiddenInput()
         }
 
 class Involve(models.Model):

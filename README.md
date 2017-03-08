@@ -80,7 +80,7 @@ Install Cloud SDK: https://cloud.google.com/sdk/downloads
 
 To include third-party libraries:
 
-`pip install -t lib/ django google-cloud django-social-auth`
+`pip install -t lib/ django google-cloud social-auth-app-django django-datetime-widget django-widget-tweaks`
 
 Collect static files:
 

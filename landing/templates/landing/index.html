@@ -9,20 +9,14 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>CataLyst - A Marketplace for Social Good</title>
+    <title>DoGood.world - A Marketplace for Social Good</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <!-- Bootstrap Core CSS -->
 	<link href="{% static 'landing/css/bootstrap.min.css' %}" rel="stylesheet">
-
-    <!-- Custom CSS -->
-	<link href="{% static 'landing/css/landing.css' %}" rel="stylesheet">
-
-    <!-- Custom Fonts 
-    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-	-->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-
+	<link href="{% static 'landing/css/landing.css' %}" rel="stylesheet">
+	<link href="{% static 'dashboard/css/dashboard.css' %}" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -39,7 +33,7 @@
     <!-- Header -->
     <header id="top" class="header">
         <div class="text-vertical-center">
-            <h1>CataLyst</h1>
+            <h1>DoGood.world</h1>
             <h3>A Marketplace for Social Good</h3>
             <br>
 			<a href="{% url 'account:login_view' %}" class="btn btn-dark btn-lg">Make a Difference</a>
@@ -96,22 +90,18 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-10 col-lg-offset-1 text-center">
-                    <h2>Trending Opportunities</h2>
-                    <hr class="small">
-                    {% for job in jobs|slice:":4" %}
-                        {% if forloop.first %}<div class="row">{% endif %}
-                        <div class="col-md-4">
-                            <div class="portfolio-item">
-                                <a href="{% url 'dashboard:jobdetail' job.id %}?user_id=-1">
-									<div class="cover-img-div"><img class="img-portfolio img-responsive" src="{% static 'landing/img/portfolio-' %}{{ forloop.counter }}.jpg"></div>
-                                    <h4>{{ job.title }}</h4>
-                                </a>
-                            </div>
+                    <h2 stype="color:#0088cc">Trending Opportunities</h2>
+                    <hr>
+                {% for job in jobs %}
+                    <div class="col-md-4">
+                        <a href="{% url 'dashboard:jobdetail' job.id %}?user_id=-1">
+                        <div class="cover-img-div">
+                            <img class="img-portfolio img-responsive" src="{{ job.thumb }}">
                         </div>
-                       {% if forloop.counter|divisibleby:2 %}</div><div class="row">{% endif %}
-                       {% if forloop.last %}</div>{% endif %}
-                    {% endfor %}
-                    <a href="{% url 'account:login_view' %}" class="btn btn-dark">View More Items</a>
+                        <h4>{{ job.title }}</h4>
+                        </a>
+                    </div>
+                {% endfor %}
                 </div>
             </div>
         </div>
@@ -129,7 +119,7 @@
                         <li><i class="fa fa-envelope-o fa-fw"></i><a href="mailto:name@example.com">name@example.com</a></li>
                     </ul>
                     <hr>
-                    <p>Copyright &copy; CataLyst 2017</p>
+                    <p>Copyright &copy; DoGood.world 2017</p>
                 </div>
             </div>
         </div>

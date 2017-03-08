@@ -1,27 +1,22 @@
 <!DOCTYPE html>
-
 {% load static %}
 <nav class="navbar navbar-default navbar-faded navbar-fixed-top">
 	<div class="container-fluid">
 		<!--
 		<div class="navbar-header">
-  		<button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#collapseContent" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
+  		<button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#collapseContent" aria-controls="collapseContent" aria-expanded="false">
+	    <span class="navbar-toggler-icon"></span>
 	    </button>
 		</div>
 		-->
-        <a class="navbar-brand" href="{% url 'landing:index' %}">CataLyst</a>
-
+        <a class="navbar-brand" href="{% url 'landing:index' %}">DoGood.world</a>
 		<div class="collapse navbar-collapse" id="collapseContent">
             <ul class="nav navbar-nav navbar-right">
                 {% if user.id is not None %}
-                <li class="nav-item active"><a class="nav-link" href="{% url 'dashboard:index' %}">Hello {{user.username}}!</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:index' %}">Hello {{user.username}}!</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'account:logout_view' %}">Log Out</a></li>
                 {% else %}
-                <li class="nav-item"><a href="{% url 'account:index' %}"> Log In</a></li>
+                <li class="nav-item"><a href="{% url 'account:index' %}">Log In</a></li>
                 {% endif %}
             </ul>
     	</div>

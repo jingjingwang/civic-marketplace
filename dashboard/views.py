@@ -13,7 +13,7 @@ from account.models import User, UserIdentity, Cause, Skill, UserCause, UserSkil
 
 def get_user_by_id(request):
     try:
-        user = User.objects.get(id= request.user.id)
+        user = User.objects.get(id=request.session['user_id'])
     except (KeyError, User.DoesNotExist):
         error(request, 'User does not exist.')
         return None
@@ -33,7 +33,7 @@ def get_job_by_id(request):
 def get_involve(job, user):
     return Involve.objects.filter(job=job, participant=user)
 
-@login_required(login_url='/account/')
+#@login_required(login_url='/account/')
 def index(request):
     user = get_user_by_id(request)
     if user is None: return redirect('account:index')
@@ -84,7 +84,8 @@ def manage_one_job(request, job_id):
     return render(request, 'dashboard/manage_one_job.html', {
         'user':user, 'job':job, 'job_skills':Skill.objects.filter(jobskill__job=job), 'job_causes':Cause.objects.filter(jobcause__job=job),
         'skills':Skill.objects.all(), 'causes':Cause.objects.all(),
-        'involved_users':User.objects.filter(involve__job=job)
+        'involved_users':User.objects.filter(involve__job=job),
+        'job_form':JobForm(instance=job)
     })
 
 def jobdetail(request, job_id):
@@ -153,12 +154,19 @@ def addjob(request):
         job = JobForm(request.POST, instance=Job.objects.get(id=request.POST['job_id']))
     else:
         job = JobForm(request.POST)
+    if job.is_valid():
+        job = job.save()
+    else:
+        error(request, job.errors)
+        return redirect('dashboard:managejobs')
     if 'cover' in request.FILES and len(request.FILES['cover']) > 0:
+        print request.FILES['cover']
         img = handle_uploaded_file(request.FILES['cover'], job.id)
     else:
         img = 'landing/img/portfolio-%d.jpg' % random.randint(1, 4)
     job.thumb = img
     job.save()
+
     JobSkill.objects.filter(job=job).delete()
     for skill in request.POST.getlist('skills'):
         jobskill = JobSkill(job=job, skill=Skill.objects.get(name=skill))

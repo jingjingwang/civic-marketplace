@@ -8,9 +8,11 @@ from google.cloud import storage
 def login_view(request):
     if request.method == 'GET':
         if request.user.is_authenticated:
+            request.session['user_id'] = request.user.id
             return redirect('dashboard:index')
-        return render(request, 'account/login.html')
-    
+        else:
+            return render(request, 'account/login.html')
+   
     try:
         user = User.objects.get(username=request.POST['username'])
     except (KeyError, User.DoesNotExist):
@@ -21,10 +23,10 @@ def login_view(request):
         return redirect('account:login_view')
     user = authenticate(username=request.POST['username'], password=request.POST['password'])
     if user is not None:
+       request.session['user_id'] = user.id
        return redirect('dashboard:index')
     error(request, 'User login failed. User could not be authenticated')
     return redirect('account:login_view')
-    
 
 def logout_view(request):
     logout(request)

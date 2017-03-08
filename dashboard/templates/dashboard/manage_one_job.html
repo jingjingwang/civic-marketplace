@@ -11,7 +11,13 @@
 	<link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet">
     <!-- Custom CSS -->
 	<link href="{% static 'dashboard/css/dashboard.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    {{ job_form.media }}
 </head>
 
 <body>
@@ -35,87 +41,64 @@
         	{% endif %}
             <form id="part-form" action="{% url 'dashboard:addjob' %}" method="post" role="form" enctype="multipart/form-data">
             {% csrf_token %}
-            <div class="col-md-10">
+            <div class="col-md-4 col-md-offset-1">
 				<hr>
-				<div class="row">
-				<div class="col-md-4 text-center">
-                	<div class="form-group">
-						<div class="cover-img-div">
-                    		<img class="img-portfolio img-responsive center-block" src="{{ job.thumb }}">
-						</div>
-					</div>
-                	<div class="form-group">
-                   		<label class="btn btn-primary btn-file">Change Cover Picture<input type="file" id="cover" name="cover" style="display:none;"></label>
-					</div>
-					<label class="btn btn-info">
-                       	<input type="checkbox" name="done" {% if job.past %}checked{% endif %} style="display:none;">This event has finished
-                   	</label>
-                </div>
-				<div class="col-md-6 col-md-offset-1">
-					<div class="row">
-						<div class="col-md-4">
-       			           	<h4>Title</h4>
-                 		</div>
-						<div class="col-md-8">
-          			     	<input type="text" id="title" name="title" tabindex="1" class="form-control" placeholder="Title" value="{{ job.title }}">
-                 		</div>
-               		</div>
-					<div class="row">
-						<div class="col-md-4">
-                    		<h4 for="description">Describe it in detail</h4>
-                 		</div>
-						<div class="col-md-8">
-                    		<textarea class="form-control" tabindex="2" id="description" name="description" rows="6">{{ job.description }}</textarea>
-                 		</div>
-               		</div>
-					<div class="row">
-						<div class="col-md-4">
-                    		<h4>Location</h4>
-                 		</div>
-						<div class="col-md-8">
-							<input type="text" id="location" name="location" tabindex="3" class="form-control" placeholder="Location" value="{{ job.location }}">
-                 		</div>
-               		</div>
-					<div class="row">
-						<div class="col-md-4">
-                    		<h4>Start time</h4>
-                 		</div>
-						<div class="col-md-8">
-                    		<input type='text' id="start_time" name="start_time" tabindex="4" class="form-control" value="{{ job.start_time }}" />
-                 		</div>
-               		</div>
-					<div class="row">
-						<div class="col-md-4">
-                    		<h4>End time</h4>
-                 		</div>
-						<div class="col-md-8">
-                    		<input type='text' id="end_time" name="end_time" tabindex="4" class="form-control" value="{{ job.end_time }}" />
-                 		</div>
-               		</div>
-               	</div>
+                {% load widget_tweaks %}
+                {% for field in job_form %}
+                    {% if field.name == "thumb" %}
+	  			    <div class="row">
+				        <div class="col-md-8 text-center">
+                	        <div class="form-group">
+						    <div class="cover-img-div">
+                    		    <img class="img-portfolio img-responsive center-block" src="{{ field.value }}">
+						    </div>
+						    </div>
+				        </div>
+  				        <div class="col-md-4 text-center">
+                	        <div class="form-group">
+                   		        <label class="btn btn-primary btn-file">Change Cover Picture<input type="file" id="cover" name="cover" style="display:none;"></label>
+					        </div>
+					        <label class="btn btn-info">
+                       	        <input type="checkbox" name="done" {% if job.past %}checked{% endif %} style="display:none;">This event has finished
+                   	        </label>
+					    </div>
+				    </div>
+                    {% elif field.name != "publisher" %}
+                    <div class="form-group">
+                    <div class="row">
+                    <label class="col-md-2 control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+                        <div class="col-md-10">
+                           {{ field|attr:"class:form-control" }}
+                           {% if field.help_text %}
+                               <p class="help-block"><small>{{ field.help_text }}</small></p>
+                           {% endif %}
+                        </div>
+                    </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+
 	            <div class="row">
-                	<div class="col-md-12">
             		<hr>
                 	<h4>Registered Users</h4>
 	                	{% for involved_user in involved_users %}
-                        	{% if forloop.first %}<div class="row">{% endif %}
-							<div class="col-md-2 text-center">
+							<div class="col-md-4 text-center">
 								<div class="avatar-div">
 									<img class="img-portfolio img-responsive center-block" src="{{ involved_user.avatar }}">
 								</div>
 								<h5><a href="{% url 'dashboard:user' involved_user.id %}">{{ involved_user.username }}</a></h5>
 								<a href="{% url 'dashboard:review' %}?user_id={{ involved_user.id}}&job_id={{ job.id }}"><label class="btn btn-primary">Write a review</label></a>
                         	</div>
-                        {% if forloop.last %}</div>{% endif %}
                     	{% endfor %}
-                	</div>
             	</div>
+            </div>
+            <div class="col-md-4 col-md-offset-1">
 	            <div class="row">
                 	<div class="col-md-12">
             		<hr>
                 	<h4>Categories</h4>
 	                	{% for cause in causes %}
-                        	<div class="col-md-2">
+                        	<div class="col-md-3">
 								<label class="button-check">
                                 	<input type="checkbox" name="causes" value="{{ cause.name }}" {% if cause in job_causes %}checked{% endif %}> 
                                 	<h5>{{ cause.name }}</h5>
@@ -129,7 +112,7 @@
                 	<div class="col-md-12">
                 	<h4>Preferred skills</h4>
                     	{% for skill in skills %}
-                        	<div class="col-md-2">
+                        	<div class="col-md-3">
 								<label class="button-check">
                                 	<input type="checkbox" name="skills" value="{{ skill.name }}" {% if skill in job_skills %}checked{% endif %}> 
                                 	<h5>{{ skill.name }}</h5>
@@ -140,7 +123,7 @@
             	</div>
             	<hr>
 				<input type="submit" id="participate-submit" tabindex="1" class="btn btn-primary" value="Update">
-                <input type="text" id="user_id" name="user_id" tabindex="2" style="display:none" value="{{ user.id }}">
+                <input type="text" id="publisher" name="publisher" tabindex="2" style="display:none" value="{{ user.id }}">
                 <input type="text" id="job_id" name="job_id" tabindex="3" style="display:none" value="{{ job.id }}">
                 <input type="text" id="identity" name="identity" tabindex="3" style="display:none" value="{{ job.identity }}">
                 </form>

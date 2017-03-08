@@ -3,11 +3,12 @@ from django.contrib.messages import error, success
 from django.db.models import Avg
 from django import forms
 from mimetypes import guess_extension
-import random
 from google.cloud import storage
 from django.contrib.auth.decorators import login_required
+from datetimewidget.widgets import DateTimeWidget
+import random
 
-from .models import Job, Involve, JobCause, JobSkill
+from .models import Job, Involve, JobCause, JobSkill, JobForm
 from account.models import User, UserIdentity, Cause, Skill, UserCause, UserSkill, PreferredTime, UserPreferredTime
 
 def get_user_by_id(request):
@@ -129,9 +130,6 @@ def participate(request):
         participate[0].delete()
         return redirect('dashboard:index')
 
-class UploadFileForm(forms.Form):
-    file = forms.FileField()
-
 def handle_uploaded_file(f, job_id):
     content_type = guess_extension(f.content_type)
     filename = 'job_cover_%d%s' % (job_id, content_type)
@@ -150,28 +148,16 @@ def addjob(request):
     skills = Skill.objects.all()
     user_identities = [str(user.username)] + [str(ui.identity) for ui in UserIdentity.objects.filter(user=user)]
     if request.method == 'GET':
-        return render(request, 'dashboard/addjob.html', {'user':user, 'causes':causes, 'skills':skills, 'user_identities':user_identities})
+        return render(request, 'dashboard/addjob.html', {'user':user, 'causes':causes, 'skills':skills, 'user_identities':user_identities, 'job_form':JobForm()})
     if 'job_id' in request.POST:
-        job = Job.objects.get(id=request.POST['job_id'])
+        job = JobForm(request.POST, instance=Job.objects.get(id=request.POST['job_id']))
     else:
-        img = 'landing/img/portfolio-%d.jpg' % random.randint(1, 4)
-        job = Job(title=request.POST['title'], description=request.POST['description'], publisher=user,
-              identity=request.POST['identity'], location=request.POST['location'], start_time=request.POST['start_time'], end_time=request.POST['end_time'],
-              thumb=img)
-        job.save()
-    job.title = request.POST['title']
-    job.description = request.POST['description']
-    job.publisher = user
-    job.identity = request.POST['identity']
-    job.location = request.POST['location']
-    if 'start_time' in request.POST:
-        job.start_time = request.POST['start_time']
-    if 'end_time' in request.POST:
-        job.end_time = request.POST['end_time']
+        job = JobForm(request.POST)
     if 'cover' in request.FILES and len(request.FILES['cover']) > 0:
         img = handle_uploaded_file(request.FILES['cover'], job.id)
-        job.thumb = img
-    job.past = 'done' in request.POST
+    else:
+        img = 'landing/img/portfolio-%d.jpg' % random.randint(1, 4)
+    job.thumb = img
     job.save()
     JobSkill.objects.filter(job=job).delete()
     for skill in request.POST.getlist('skills'):

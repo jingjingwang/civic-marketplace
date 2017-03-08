@@ -34,6 +34,9 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'widget_tweaks',
+    'datetimewidget',
+    'social_django',
     'landing.apps.LandingConfig',
     'account.apps.AccountConfig',
     'dashboard.apps.DashboardConfig',
@@ -42,7 +45,6 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'social_django',
     'django.contrib.staticfiles',
 ]
 
@@ -54,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'civic_marketplace.urls'
@@ -155,3 +158,7 @@ TIME_ZONE = 'America/Los_Angeles'
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 STATIC_ROOT = 'static'
 STATIC_URL = '/static/'
+
+USE_L10N = True
+USE_TZ = True
+USE_I18N = True

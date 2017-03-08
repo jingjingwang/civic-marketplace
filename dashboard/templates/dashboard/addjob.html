@@ -7,14 +7,16 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>CataLyst - Dashboard</title>
-    <!-- Bootstrap Core CSS -->
-	<link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet">
-    <!-- Custom CSS -->
-	<link href="{% static 'dashboard/css/dashboard.css' %}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+	<link href="{% static 'dashboard/css/dashboard.css' %}" rel="stylesheet">
+	{{ job_form.media }}
 </head>
 
 <body>
@@ -31,73 +33,35 @@
 	  	</div>
         <form id="addjob-form" action="{% url 'dashboard:addjob' %}" method="post" role="form" enctype="multipart/form-data">
         {% csrf_token %}
-  		<div class="col-md-10">
+  		<div class="col-md-5">
 			<hr>
 	  		<div class="row">
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <h4>Title</h4>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="title" name="title" tabindex="1" class="form-control" placeholder="Title" value="{{ job.title }}">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <h4 for="description">Describe it in detail</h4>
-                        </div>
-                        <div class="col-md-8">
-                            <textarea class="form-control" tabindex="2" id="description" name="description" rows="6">{{ job.description }}</textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <h4>Location</h4>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" id="location" name="location" tabindex="3" class="form-control" placeholder="Location" value="{{ job.location }}">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <h4>Start time</h4>
-                        </div>
-                        <div class="col-md-8">
-                            <input type='text' id="start_time" name="start_time" tabindex="4" class="form-control" value="{{ job.start_time }}" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <h4>End time</h4>
-                        </div>
-                        <div class="col-md-8">
-                            <input type='text' id="end_time" name="end_time" tabindex="4" class="form-control" value="{{ job.end_time }}" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4 col-xs-12">
-                            <h4>Representing</h4>
-                        </div>
-                        <div class="col-md-8">
+			     {% load widget_tweaks %}
+                 {% for field in job_form %}
+                     <div class="form-group">
+                     <label class="col-md-2 control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+                         <div class="col-md-10">
+                            {{ field|attr:"class:form-control" }}
+                            {% if field.help_text %}
+                                <p class="help-block"><small>{{ field.help_text }}</small></p>
+                            {% endif %}
+                         </div>
+                     </div>
+                 {% endfor %}
+                     <label class="col-md-2 control-label" for="identity">Representing</label>
+                        <div class="col-md-10">
+	  		                <div class="row">
                     		{% for identity in user_identities %}
-                        	<div class="col-md-2 col-xs-4">
+                        	<div class="col-md-3">
                             	<label class="button-check">
                             	<input type="radio" name="identity" value="{{ identity }}" {% if forloop.first %}checked{% endif %}>
                                 <h5>{{ identity }}</h5>
                             	</label>
                         	</div>
                     		{% endfor %}
+                        	</div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                    	<label class="btn btn-primary btn-file">Upload a picture<input type="file" id="cover" name="cover" style="display:none;"></label>
-                		</div>
-                	</div>
-                </div>
+                   	 <label class="btn btn-primary btn-file">Upload a picture<input type="file" id="cover" name="cover" style="display:none;"></label>
             </div>
 			<hr>
 			<h4>Pick the categories</h4>
@@ -125,7 +89,7 @@
             </div>
 			<hr>
         	<input type="submit" class="btn btn-primary" value="Publish It">
-			<input type="text" id="user_id" name="user_id" tabindex="3" style="display:none" value="{{ user.id }}">
+			<input type="text" name="publisher_id" style="display:none" value="{{ user.id }}">
             </div>
     	</div>
         </form>

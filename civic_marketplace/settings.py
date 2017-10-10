@@ -109,19 +109,19 @@ if os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine'):
 else:
     DATABASES = {
         # SQLite
-        #'default': {
-        #    'ENGINE': 'django.db.backends.sqlite3',
-        #    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        #}
-        # MySQL
         'default': {
-           'ENGINE': 'django.db.backends.mysql',
-           'HOST': '127.0.0.1',
-           'PORT': '3307',
-           'NAME': 'catalyst',
-           'USER': 'catalyst',
-           'PASSWORD': 'catalyst',
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
+        # MySQL
+        #'default': {
+        #   'ENGINE': 'django.db.backends.mysql',
+        #   'HOST': '127.0.0.1',
+        #   'PORT': '3307',
+        #   'NAME': 'catalyst',
+        #   'USER': 'catalyst',
+        #   'PASSWORD': 'catalyst',
+        #}
     }
     SECURE_SSL_REDIRECT = False
     SESSION_COOKIE_SECURE = False

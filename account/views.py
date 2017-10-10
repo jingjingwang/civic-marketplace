@@ -3,7 +3,7 @@ from django.contrib.messages import error, success
 from django.contrib.auth import authenticate,login,logout
 from .models import User, Cause, Skill, UserIdentity, Organization, UserCause, UserSkill, PreferredTime, UserPreferredTime
 from mimetypes import guess_extension
-from google.cloud import storage
+#from google.cloud import storage
 
 def login_view(request):
     if request.method == 'GET':

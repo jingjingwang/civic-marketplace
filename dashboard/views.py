@@ -3,7 +3,7 @@ from django.contrib.messages import error, success
 from django.db.models import Avg
 from django import forms
 from mimetypes import guess_extension
-from google.cloud import storage
+#from google.cloud import storage
 from django.contrib.auth.decorators import login_required
 from datetimewidget.widgets import DateTimeWidget
 import random

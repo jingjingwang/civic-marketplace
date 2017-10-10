@@ -40,10 +40,9 @@ Uncomment the MySQL local service part in the `DATABASES` entry in `civic_market
 
 ### Populate the database
 
-`python manage.py makemigrations dashboard account
-python manage.py migrate
-python manage.py loaddata skills causes organizations preferredtimes
-`
+`python manage.py makemigrations`
+`python manage.py migrate`
+`python manage.py loaddata skills causes organizations preferredtimes`
 
 Check if django tables are created in your selected backend.
 
@@ -62,6 +61,8 @@ You can also do:
 but may need to add the `host` in `ALLOWED_HOSTS` in `civic_marketplace/settings.py`.
 
 ## Connect to Google Cloud Platform
+
+**Note: our cloud instance has expired.**
 
 `./cloud_sql_proxy -instances="catalyst-market:us-central1:catalyst"=tcp:3307`
 

@@ -41,7 +41,9 @@ Uncomment the MySQL local service part in the `DATABASES` entry in `civic_market
 ### Populate the database
 
 `python manage.py makemigrations`
+
 `python manage.py migrate`
+
 `python manage.py loaddata skills causes organizations preferredtimes`
 
 Check if django tables are created in your selected backend.
